@@ -49,11 +49,27 @@ nav.scrolled{padding:11px 30px;background:rgba(6,11,22,.74);backdrop-filter:blur
 .brand{display:flex;align-items:center;gap:.55rem;font-family:var(--display);font-weight:700;font-size:1.1rem;color:#fff}
 .brand .mark{width:28px;height:28px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#06210a;box-shadow:0 0 16px -2px rgba(168,207,56,.6)}
 .brand .mark svg{width:16px;height:16px}.brand b{color:var(--lime)}
-.links{display:flex;gap:24px;align-items:center}
+.links{display:flex;gap:26px;align-items:center}
 .links a{font-family:var(--mono);font-size:12px;letter-spacing:.3px;color:var(--fog2);transition:color .25s;position:relative}
-.links a::after{content:'';position:absolute;inset-inline-start:0;bottom:-6px;height:2px;width:0;background:var(--lime);transition:width .25s;border-radius:2px}
-.links a:hover,.links a.active{color:#fff}.links a.active::after{width:100%}
-@media(max-width:980px){.links{display:none}}
+.links>a::after,.navgroup-trigger::after{content:'';position:absolute;inset-inline-start:0;bottom:-6px;height:2px;width:0;background:var(--lime);transition:width .25s;border-radius:2px}
+.links a:hover,.links a.active{color:#fff}
+.links>a.active::after,.navgroup.active .navgroup-trigger::after{width:100%}
+/* nav dropdown groups */
+.navgroup{position:relative;display:flex;align-items:center}
+.navgroup-trigger{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;letter-spacing:.3px;color:var(--fog2);position:relative;transition:color .25s}
+.navgroup:hover .navgroup-trigger,.navgroup.active .navgroup-trigger{color:#fff}
+.navgroup-trigger svg{width:9px;height:9px;transition:transform .3s var(--ease)}
+.navgroup:hover .navgroup-trigger svg{transform:rotate(180deg)}
+.navgroup::before{content:'';position:absolute;top:100%;inset-inline:0;height:18px}
+.dropdown{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(8px);min-width:178px;max-height:min(72vh,560px);overflow-y:auto;
+  background:rgba(6,11,22,.94);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:14px;padding:8px;
+  display:flex;flex-direction:column;gap:2px;opacity:0;visibility:hidden;transition:opacity .25s,transform .25s,visibility .25s;
+  box-shadow:0 20px 44px rgba(4,10,22,.6);z-index:210}
+.navgroup:hover .dropdown,.navgroup:focus-within .dropdown{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.dropdown a{padding:9px 14px;border-radius:9px;color:var(--fog2);font-size:12px;white-space:nowrap;transition:background .2s,color .2s;text-align:start}
+.dropdown a::after{display:none}
+.dropdown a:hover,.dropdown a.active{background:rgba(168,207,56,.09);color:#fff}
+@media(max-width:980px){.dropdown,.navgroup-trigger svg,.navgroup::before{display:none}.links{gap:18px}.links a,.navgroup-trigger{font-size:11px}}
 
 /* layout */
 .container{width:min(var(--maxw),calc(100% - 32px));margin:0 auto;padding:120px 0 70px}
@@ -205,6 +221,179 @@ li strong{color:var(--lime-pale);font-weight:600}
   .hero{padding:24px}.card,.note{padding:18px}
   th,td{padding:11px 12px;font-size:13.5px}
 }
+
+/* ============================================================
+   AI GUIDE / MULTI-PAGE ADDITIONS — pages, visuals, rich cards
+   ============================================================ */
+/* single-file page routing */
+.page{display:none}
+.page.active{display:block;animation:pageIn .5s var(--ease)}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* extra keyframes for AI visuals */
+@keyframes hPulse{0%,100%{opacity:.3}50%{opacity:.9}}
+@keyframes hDash{to{stroke-dashoffset:-32}}
+@keyframes hSpin{to{transform:rotate(360deg)}}
+.hp{animation:hPulse 3s ease-in-out infinite}
+.hd{stroke-dasharray:5 6;animation:hDash 1.5s linear infinite}
+
+/* card icon tile + eyebrow tag + example slot + featured card */
+.card .tag{font-family:var(--mono);font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--lime);
+  margin-bottom:10px;display:inline-flex;gap:8px;align-items:center}
+.card .tag::before{content:'';width:16px;height:1px;background:var(--lime);display:inline-block}
+.itile{width:52px;height:52px;border-radius:14px;background:rgba(168,207,56,.1);border:1px solid var(--line2);
+  display:grid;place-items:center;margin-bottom:16px;position:relative;overflow:hidden;flex:0 0 auto}
+.itile svg{width:27px;height:27px;stroke:var(--lime);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;position:relative;z-index:2}
+.itile::after{content:'';position:absolute;inset:0;background:var(--grad);opacity:.08}
+.card.feat{background:linear-gradient(150deg,rgba(168,207,56,.12),rgba(124,179,66,.03));border-color:var(--line2);box-shadow:inset 0 0 0 1px rgba(168,207,56,.06)}
+.card.feat .itile{background:var(--grad)}
+.card.feat .itile svg{stroke:#06210a}
+.card.feat .itile::after{display:none}
+.ex{margin-top:14px;padding:12px 14px;border-radius:12px;background:rgba(8,15,28,.6);border:1px solid var(--line);
+  font-family:var(--latin);font-size:13.5px;color:var(--lime-pale);direction:ltr;text-align:left;line-height:1.7}
+.ex b{color:#fff;font-weight:600}
+.ex .lbl{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:1.6px;color:var(--lime);text-transform:uppercase;margin-bottom:5px}
+
+/* bigger, bolder cards + headings on the AI guide page */
+[data-page="ai-guide"] .card{padding:30px}
+[data-page="ai-guide"] .card h3{font-size:clamp(19px,2.1vw,25px);margin-bottom:11px}
+[data-page="ai-guide"] .card p{font-size:14.5px;color:var(--fog)}
+[data-page="ai-guide"] h2{font-size:clamp(27px,3.4vw,42px)}
+[data-page="ai-guide"] .grid{gap:18px}
+@media(max-width:640px){[data-page="ai-guide"] .card{padding:20px}}
+
+/* section visual frame */
+.viz{margin-top:24px;border:1px solid var(--line);border-radius:var(--r);background:
+  radial-gradient(620px 320px at 82% -10%,rgba(168,207,56,.07),transparent 60%),var(--panel2);
+  padding:clamp(20px,3vw,34px);overflow-x:auto;position:relative}
+.viz svg{width:100%;min-width:560px;height:auto;display:block}
+.viz-cap{font-family:var(--mono);font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fog3);margin-top:16px;text-align:center}
+.viz-node-t{font-family:var(--display);font-weight:600;fill:#fff}
+.viz-sub-t{font-family:var(--mono);fill:#8497AE}
+
+/* numbered steps */
+.steps{counter-reset:s;margin-top:20px;display:grid;gap:13px}
+.step{position:relative;padding:20px 24px 20px 70px;background:var(--panel2);border:1px solid var(--line);border-radius:16px;transition:border-color .3s,transform .3s,box-shadow .3s}
+.step:hover{border-color:var(--line2);box-shadow:0 16px 36px rgba(4,10,22,.4)}
+.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;inset-inline-start:20px;top:18px;
+  font-family:var(--mono);font-size:14px;color:var(--ink);background:var(--grad);width:34px;height:34px;border-radius:10px;
+  display:grid;place-items:center;font-weight:700;box-shadow:0 0 16px -3px rgba(168,207,56,.7)}
+.step h3{margin-bottom:6px;font-size:clamp(16px,1.8vw,20px)}
+.step p{margin:0}
+[dir="rtl"] .step{padding:20px 70px 20px 24px}
+
+/* tool category grid */
+.toolcat{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-top:20px}
+.tc{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel2);transition:border-color .3s,transform .3s,box-shadow .3s}
+.tc:hover{border-color:var(--line2);transform:translateY(-4px);box-shadow:0 18px 40px rgba(4,10,22,.45)}
+.tc-ic{width:42px;height:42px;border-radius:11px;background:rgba(168,207,56,.1);border:1px solid var(--line2);display:grid;place-items:center;margin-bottom:13px}
+.tc-ic svg{width:22px;height:22px;stroke:var(--lime);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tc h4{font-family:var(--display);font-size:15.5px;color:#fff;margin-bottom:7px}
+.tc p{font-size:12.5px;color:var(--fog2);margin:0;line-height:1.65}
+.tc .names{font-family:var(--mono);font-size:11.5px;color:var(--lime-pale);margin-top:10px;line-height:1.8;display:block}
+
+/* mini stat row inside cards/sections */
+.statrow{display:flex;gap:26px;flex-wrap:wrap;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.statrow .s strong{display:block;font-family:var(--display);font-size:30px;line-height:1;background:var(--grad-text);
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px}
+.statrow .s span{font-size:12px;color:var(--fog3)}
+
+/* pill list */
+.pilllist{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.pilllist .p{font-family:var(--mono);font-size:11.5px;color:var(--lime-pale);padding:6px 13px;border:1px solid var(--line2);border-radius:100px;background:rgba(168,207,56,.05)}
+
+/* file-card (CLAUDE.md style code block) */
+.filecard{margin-top:18px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:rgba(6,11,22,.7)}
+.filecard-bar{display:flex;align-items:center;gap:9px;padding:11px 16px;background:rgba(168,207,56,.07);border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:12px;color:var(--lime-pale)}
+.filecard-bar .d{width:9px;height:9px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime)}
+.filecard pre{margin:0;padding:18px;overflow-x:auto;direction:ltr;text-align:left;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:var(--fog)}
+.filecard pre .c{color:var(--lime)}
+.filecard pre .k{color:#fbbf24}
+
+/* ============================================================
+   v3 — splash, LTR navbar, smoother motion, new visuals
+   ============================================================ */
+/* smoother reveal easing + gentle scale, plus directional variants */
+.reveal,.stagger>*{transition-timing-function:cubic-bezier(.16,1,.3,1);transition-duration:.85s}
+.reveal.r-scale{transform:translateY(20px) scale(.96)}
+.reveal.r-left{transform:translateX(-34px)}
+.reveal.r-right{transform:translateX(34px)}
+.reveal.vis.r-scale,.reveal.vis.r-left,.reveal.vis.r-right{transform:none}
+.stagger.vis>*{transition-delay:calc(var(--i,0)*60ms)}
+
+/* LTR, enhanced navbar + animated logo */
+nav{direction:ltr}
+.brand .mark{transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.brand:hover .mark{transform:rotate(-10deg) scale(1.06)}
+.brand b{margin-inline-start:.32em}
+
+/* ===== welcome splash ===== */
+#splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;direction:ltr;
+  background:radial-gradient(820px 520px at 50% 38%,rgba(124,179,66,.18),transparent 62%),#070d16;
+  transition:opacity .7s cubic-bezier(.16,1,.3,1),visibility .7s}
+#splash.gone{opacity:0;visibility:hidden;pointer-events:none}
+.splash-inner{text-align:center;position:relative}
+.splash-mascot{width:104px;height:104px;margin:0 auto 24px;animation:mBob 1.7s ease-in-out infinite}
+@keyframes mBob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-15px) rotate(4deg)}}
+.splash-mascot .eye{transform-box:fill-box;transform-origin:center;animation:blink 2.6s ease-in-out infinite}
+.splash-mascot .eye.r{animation:wink 2.6s ease-in-out infinite}
+@keyframes blink{0%,42%,48%,100%{transform:scaleY(1)}45%{transform:scaleY(.1)}}
+@keyframes wink{0%,70%,80%,100%{transform:scaleY(1)}75%{transform:scaleY(.1)}}
+.splash-title{font-family:var(--display);font-weight:700;font-size:clamp(36px,8vw,80px);letter-spacing:-.03em;line-height:1;
+  display:flex;gap:.3em;justify-content:center;flex-wrap:wrap}
+.splash-title .word{display:inline-flex}
+.splash-title .word.n b{color:var(--lime-pale);font-weight:700}
+.splash-title .word.n b span{color:var(--lime-pale)}
+.splash-title b{color:#faf7f2;font-weight:700}
+.splash-title b span{display:inline-block;opacity:0;transform:translateY(34px) rotate(10deg);animation:letterIn .62s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes letterIn{to{opacity:1;transform:none}}
+.splash-sub{margin-top:18px;font-family:var(--mono);font-size:12px;letter-spacing:3.5px;text-transform:uppercase;color:var(--fog3);opacity:0;animation:sFade .6s ease forwards 1.15s}
+.splash-bar{width:0;height:2px;margin:24px auto 0;background:var(--grad);border-radius:2px;box-shadow:0 0 14px rgba(168,207,56,.6);animation:barGrow 1.9s cubic-bezier(.16,1,.3,1) forwards .25s}
+@keyframes barGrow{to{width:190px}}
+@keyframes sFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.splash-skip{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;letter-spacing:2px;
+  color:var(--fog3);cursor:pointer;text-transform:uppercase;background:none;border:none;opacity:0;animation:sFade .5s ease forwards 1.5s}
+.splash-skip:hover{color:var(--lime)}
+.confetti{position:absolute;top:40%;width:9px;height:9px;border-radius:2px;opacity:0}
+.splash.go .confetti{animation:conf 1.5s ease-out forwards}
+@keyframes conf{0%{opacity:1;transform:translate(0,0) scale(1) rotate(0)}100%{opacity:0;transform:translate(var(--cx,0),var(--cy,-130px)) scale(.3) rotate(260deg)}}
+
+/* ===== Chapter 01 — restyled tool cards (bento / accent-bar) ===== */
+.tc{position:relative;padding:24px;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  background:linear-gradient(165deg,rgba(168,207,56,.07),transparent 52%),var(--panel2)}
+.tc::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.tc:hover::before{transform:scaleX(1)}
+.tc:hover{transform:translateY(-5px);border-color:var(--line2);box-shadow:0 22px 46px rgba(4,10,22,.5)}
+.tc-ic{width:50px;height:50px;border-radius:14px;background:var(--grad);border:none;display:grid;place-items:center;margin-bottom:15px;
+  box-shadow:0 8px 22px -8px rgba(168,207,56,.7);transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.tc:hover .tc-ic{transform:rotate(-6deg) scale(1.05)}
+.tc-ic svg{width:24px;height:24px;stroke:#06210a;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tc h4{font-family:var(--display);font-size:16px;color:#fff;margin-bottom:7px}
+.tc .names{font-family:var(--mono);font-size:11px;color:var(--lime-pale);margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+
+/* ===== HTML diagrams (Ch03 decision tree, Ch04 concept flow) — text-safe ===== */
+.dtree{display:grid;gap:12px;margin-top:6px}
+.dbranch{display:grid;grid-template-columns:215px 1fr;gap:16px;align-items:center;padding:15px 18px;border:1px solid var(--line);border-radius:15px;
+  background:var(--panel2);transition:border-color .35s,transform .35s,box-shadow .35s}
+.dbranch:hover{border-color:var(--line2);transform:translateX(5px);box-shadow:0 14px 32px rgba(4,10,22,.4)}
+.dbranch .cond{font-family:var(--mono);font-size:12px;color:var(--lime-pale);display:flex;align-items:center;gap:9px;line-height:1.5}
+.dbranch .cond::before{content:'';width:9px;height:9px;border-radius:50%;background:var(--lime);box-shadow:0 0 9px var(--lime);flex:0 0 auto}
+.dbranch .tools{display:flex;flex-wrap:wrap;gap:8px}
+.dbranch .tools span{font-family:var(--mono);font-size:11.5px;color:#fff;padding:6px 12px;border:1px solid var(--line2);border-radius:100px;background:rgba(168,207,56,.07)}
+.cflow{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:8px;direction:ltr}
+.cnode{padding:16px 20px;border-radius:15px;border:1px solid var(--line2);background:var(--panel2);text-align:center;min-width:130px;display:flex;flex-direction:column;justify-content:center;transition:transform .35s}
+.cnode:hover{transform:translateY(-3px)}
+.cnode.big{background:var(--grad);border:none;box-shadow:0 12px 30px -10px rgba(168,207,56,.7)}
+.cnode .t{font-family:var(--display);font-weight:600;font-size:15.5px;color:#fff}
+.cnode.big .t{color:#06210a}
+.cnode .s{font-family:var(--mono);font-size:9.5px;color:var(--fog3);margin-top:4px;letter-spacing:.5px}
+.cnode.big .s{color:#0a2a0a}
+.carrow{display:flex;align-items:center;color:var(--lime);font-size:22px;font-weight:300}
+.cfeed{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:14px;direction:ltr}
+.cfeed .cnode{min-width:104px;padding:12px 16px}
+.cfeed-lbl{text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fog3);margin-top:16px}
+@media(max-width:640px){.dbranch{grid-template-columns:1fr;gap:10px}.carrow{transform:rotate(90deg)}.tc{padding:20px}}
 </style>
 </head>
 <body>
@@ -212,18 +401,94 @@ li strong{color:var(--lime-pale);font-weight:600}
 <div id="cursor-glow"></div>
 <canvas id="stars"></canvas>
 
+<div id="splash" class="splash go">
+  <div class="splash-inner">
+    <svg class="splash-mascot" viewBox="0 0 100 100" aria-hidden="true">
+      <defs><radialGradient id="sm" cx="50%" cy="40%" r="62%"><stop offset="0%" stop-color="#CDE9A2"/><stop offset="64%" stop-color="#A8CF38"/><stop offset="100%" stop-color="#5D9842"/></radialGradient></defs>
+      <circle cx="50" cy="50" r="38" fill="url(#sm)"/>
+      <circle cx="32" cy="58" r="4.5" fill="#fff" opacity=".22"/>
+      <circle cx="68" cy="58" r="4.5" fill="#fff" opacity=".22"/>
+      <circle class="eye" cx="39" cy="45" r="5.5" fill="#06210a"/>
+      <circle class="eye r" cx="61" cy="45" r="5.5" fill="#06210a"/>
+      <path d="M37 62 q13 12 26 0" stroke="#06210a" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="splash-title">
+      <span class="word"><b><span style="animation-delay:0s">W</span><span style="animation-delay:.05s">e</span><span style="animation-delay:.1s">l</span><span style="animation-delay:.15s">c</span><span style="animation-delay:.2s">o</span><span style="animation-delay:.25s">m</span><span style="animation-delay:.3s">e</span></b></span>
+      <span class="word n"><b><span style="animation-delay:.42s">R</span><span style="animation-delay:.47s">e</span><span style="animation-delay:.52s">n</span><span style="animation-delay:.57s">a</span><span style="animation-delay:.62s">d</span></b></span>
+    </div>
+    <div class="splash-sub">جارٍ تجهيز رحلتك…</div>
+    <div class="splash-bar"></div>
+    <span class="confetti" style="left:26%;--cx:-46px;--cy:-150px;background:#A8CF38;animation-delay:.35s"></span>
+    <span class="confetti" style="left:38%;--cx:24px;--cy:-170px;background:#CDE9A2;animation-delay:.5s"></span>
+    <span class="confetti" style="left:62%;--cx:-20px;--cy:-160px;background:#7CB342;animation-delay:.45s"></span>
+    <span class="confetti" style="left:74%;--cx:52px;--cy:-150px;background:#fbbf24;animation-delay:.6s"></span>
+    <span class="confetti" style="left:50%;--cx:0px;--cy:-185px;background:#A8CF38;animation-delay:.7s"></span>
+  </div>
+  <button class="splash-skip" id="splashSkip" type="button">Skip ›</button>
+</div>
+
 <nav id="nav">
-  <a class="brand" href="#top"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h12"/></svg></span>Design<b>Roadmaps</b></a>
+  <a class="brand" href="#top"><span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h12"/></svg></span>Renad<b>Eid</b></a>
   <div class="links">
-    <a href="#workflow">Workflow</a>
-    <a href="#principles">UI/UX</a>
-    <a href="#models">Models</a>
-    <a href="#production">Production</a>
-    <a href="#sop">SOP</a>
+    <div class="navgroup active" data-page="roadmap">
+      <a class="navgroup-trigger" href="#top">Roadmap
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></a>
+      <div class="dropdown">
+        <a href="#workflow">Workflow</a>
+        <a href="#principles">Principles</a>
+        <a href="#models">Models</a>
+        <a href="#production">Production</a>
+        <a href="#sop">SOP</a>
+      </div>
+    </div>
+    <div class="navgroup" data-page="ai-guide">
+      <a class="navgroup-trigger" href="#ai-top">AI Guide
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></a>
+      <div class="dropdown">
+        <a href="#tools">AI Tools</a>
+        <a href="#career">AI at Work</a>
+        <a href="#choose">Pick the Tool</a>
+        <a href="#concepts">Core Concepts</a>
+        <a href="#harness">The Harness</a>
+        <a href="#products">Build Products</a>
+        <a href="#mindmap">Mind-Map</a>
+        <a href="#mastery">Claude Code &amp; Codex</a>
+        <a href="#context-files">CLAUDE.md &amp; AGENTS.md</a>
+        <a href="#agents">Agent Environments</a>
+        <a href="#automations">Automations</a>
+        <a href="#scratch">Build a Model</a>
+        <a href="#learning">Learning Path</a>
+      </div>
+    </div>
+    <div class="navgroup" data-page="uiux">
+      <a class="navgroup-trigger" href="#ux-top">UI/UX
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></a>
+      <div class="dropdown">
+        <a href="#ux-intro">Foundations</a>
+        <a href="#ux-process">Design Thinking</a>
+        <a href="#ux-research">Research</a>
+        <a href="#ux-ia">Info Architecture</a>
+        <a href="#ux-wireframe">Wireframes</a>
+        <a href="#ux-principles">Visual Principles</a>
+        <a href="#ux-color">Color</a>
+        <a href="#ux-type">Typography</a>
+        <a href="#ux-layout">Layout &amp; Spacing</a>
+        <a href="#ux-systems">Design Systems</a>
+        <a href="#ux-motion">Motion</a>
+        <a href="#ux-a11y">Accessibility</a>
+        <a href="#ux-heuristics">Heuristics</a>
+        <a href="#ux-tools">Tools</a>
+        <a href="#ux-cases">Case Studies</a>
+        <a href="#ux-roadmap">0 → Hero</a>
+      </div>
+    </div>
   </div>
 </nav>
 
 <div class="container">
+
+  <!-- ════════════════ ROADMAP PAGE ════════════════ -->
+  <main class="page active" data-page="roadmap">
 
   <!-- HERO -->
   <section class="hero-section reveal" id="top">
@@ -840,6 +1105,1291 @@ li strong{color:var(--lime-pale);font-weight:600}
   </section>
 
   <div class="footer">Prepared as an internal bilingual handout for product design, product development, and production delivery.</div>
+  </main>
+
+  <!-- ════════════════ AI GUIDE PAGE ════════════════ -->
+  <main class="page" data-page="ai-guide">
+
+  <!-- HERO -->
+  <section class="hero-section reveal" id="ai-top">
+    <div class="hero-layout">
+      <div class="hero-left">
+        <div class="hero-pre">AI Engineering Field Guide · 2026</div>
+        <div class="hero-name-group">
+          <div class="hero-for">A practical guide to</div>
+          <h1 class="hero-name">AI<br><em>Mastery</em></h1>
+          <div class="hero-subtitle">From Using AI · to Building AI</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-body">
+          <p class="lead">دليل عملي يشرح أدوات الـ AI الحديثة — Claude و ChatGPT و Gemini و Cursor و Antigravity و غيرها — ومتى تستخدم كل أداة، والمفاهيم الأساسية (LLM, Agents, Skills, MCP, Tokens, Memory, Context, Harness)، وكيف تبني منتجات ذكية، وصولًا إلى بناء نموذج AI من الصفر.</p>
+          <p class="en" style="border:none;padding:0;margin-top:10px">Thirteen chapters that take a beginner, junior, or senior from confidently <em>using</em> AI tools at work to understanding the stack well enough to <em>build</em> their own.</p>
+        </div>
+      </div>
+      <div class="hero-right">
+        <svg viewBox="0 0 380 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI knowledge graph">
+          <defs>
+            <radialGradient id="core" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#CDE9A2"/><stop offset="60%" stop-color="#A8CF38"/><stop offset="100%" stop-color="#5D9842"/>
+            </radialGradient>
+            <linearGradient id="cardg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="rgba(18,32,54,.95)"/><stop offset="100%" stop-color="rgba(13,27,43,.95)"/>
+            </linearGradient>
+          </defs>
+          <g stroke="#A8CF38" stroke-width="1.2" opacity=".4" fill="none" stroke-dasharray="4 5">
+            <path d="M190 210 L70 90"/><path d="M190 210 L320 110"/><path d="M190 210 L60 320"/>
+            <path d="M190 210 L320 320"/><path d="M190 210 L190 60"/><path d="M190 210 L190 370"/>
+          </g>
+          <circle cx="190" cy="210" r="46" fill="url(#core)" opacity=".18"/>
+          <circle cx="190" cy="210" r="30" fill="url(#core)"/>
+          <path d="M190 196 v28 M176 210 h28 M181 201 l18 18 M199 201 l-18 18" stroke="#06210a" stroke-width="2.2" stroke-linecap="round"/>
+          <circle cx="190" cy="210" r="44" fill="none" stroke="#A8CF38" stroke-width="1" opacity=".5" class="hp"/>
+          <g font-family="JetBrains Mono, monospace" font-size="9" fill="#CDE9A2">
+            <g class="hf0"><rect x="28" y="66" width="74" height="30" rx="8" fill="url(#cardg)" stroke="#A8CF38" stroke-opacity=".5"/><text x="65" y="85" text-anchor="middle">LLM</text></g>
+            <g class="hf1"><rect x="284" y="86" width="76" height="30" rx="8" fill="url(#cardg)" stroke="#A8CF38" stroke-opacity=".5"/><text x="322" y="105" text-anchor="middle">AGENT</text></g>
+            <g class="hf2"><rect x="20" y="296" width="78" height="30" rx="8" fill="url(#cardg)" stroke="#A8CF38" stroke-opacity=".5"/><text x="59" y="315" text-anchor="middle">SKILLS</text></g>
+            <g class="hf1"><rect x="280" y="300" width="74" height="30" rx="8" fill="url(#cardg)" stroke="#A8CF38" stroke-opacity=".5"/><text x="317" y="319" text-anchor="middle">MCP</text></g>
+            <g class="hf2"><rect x="150" y="40" width="80" height="30" rx="8" fill="url(#cardg)" stroke="#A8CF38" stroke-opacity=".5"/><text x="190" y="59" text-anchor="middle">TOKENS</text></g>
+            <g class="hf0"><rect x="146" y="352" width="88" height="30" rx="8" fill="url(#cardg)" stroke="#A8CF38" stroke-opacity=".5"/><text x="190" y="371" text-anchor="middle">HARNESS</text></g>
+          </g>
+          <g fill="#A8CF38">
+            <circle cx="65" cy="96" r="3"/><circle cx="322" cy="116" r="3"/><circle cx="59" cy="296" r="3"/>
+            <circle cx="317" cy="300" r="3"/><circle cx="190" cy="70" r="3"/><circle cx="190" cy="352" r="3"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1) AI TOOLS -->
+  <section id="tools">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 01 · The Landscape</div>
+    <h2>1) ما هي أدوات الـ AI؟</h2>
+    <p class="section-intro">أدوات الـ AI تطبيقات مبنية فوق نماذج لغوية ضخمة (LLMs) تساعدك في الكتابة، البحث، البرمجة، التحليل، التصميم، و البناء. الأهم أن تعرف <strong>فئة</strong> كل أداة و قوتها — لا أن تحفظ الأسماء، لأنها تتجدّد كل أشهر.</p></div>
+
+    <div class="toolcat reveal">
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4z"/></svg></div><h4>محادثة و تفكير</h4><p>أسئلة، تحليل، كتابة، برمجة، استدلال طويل.</p><span class="names">Claude · ChatGPT · Gemini</span></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg></div><h4>بحث بمصادر</h4><p>إجابات محدّثة من الويب مع مراجع.</p><span class="names">Perplexity · Gemini</span></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg></div><h4>وكلاء برمجة و IDEs</h4><p>يقرأ مشروعك، يعدّل ملفات، يشغّل أوامر.</p><span class="names">Claude Code · Cursor · Codex · Copilot · Antigravity</span></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></div><h4>استوديو و تجريب</h4><p>تجرّب النماذج و الـ prompts و تبني نماذج أولية.</p><span class="names">Google AI Studio · Vercel v0</span></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="6" rx="1.5"/><rect x="4" y="14" width="16" height="6" rx="1.5"/><path d="M8 7h.01M8 17h.01"/></svg></div><h4>بناء و نشر و backend</h4><p>استضافة، قواعد بيانات، auth، APIs بسرعة.</p><span class="names">Vercel · Supabase · Firebase</span></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M3 17l5-4 4 3 3-2 6 5"/></svg></div><h4>صور و تصميم بصري</h4><p>توليد و تحرير صور و أصول و واجهات.</p><span class="names">Nano Banana Pro · ChatGPT (GPT Image) · Midjourney · Adobe Firefly · Imagen</span></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M9 8h6M9 12h6"/></svg></div><h4>معرفة و ملاحظات</h4><p>تحلّل مصادرك أنت و تجيب منها (و audio overview).</p><span class="names">Google NotebookLM</span></div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>الأداة</th><th>الجهة</th><th>الفئة</th><th>الأفضل في</th></tr></thead>
+        <tbody>
+          <tr><td>Claude</td><td>Anthropic</td><td>محادثة / تفكير</td><td>سياق طويل، تحليل، برمجة، أمان</td></tr>
+          <tr><td>ChatGPT</td><td>OpenAI</td><td>محادثة / صور</td><td>عام، متعدد وسائط، GPT Image للصور</td></tr>
+          <tr><td>Gemini</td><td>Google</td><td>محادثة / وسائط</td><td>تكامل Google، نصوص و صور و فيديو</td></tr>
+          <tr><td>Perplexity</td><td>Perplexity</td><td>بحث</td><td>إجابات محدّثة مع مصادر</td></tr>
+          <tr><td>NotebookLM</td><td>Google</td><td>معرفة / ملاحظات</td><td>الإجابة من مستنداتك أنت + audio overviews</td></tr>
+          <tr><td>Claude Code</td><td>Anthropic</td><td>وكيل برمجة</td><td>مهام برمجية كاملة في الـ terminal</td></tr>
+          <tr><td>Cursor</td><td>Anysphere</td><td>IDE ذكي</td><td>برمجة داخل محرر مدمج بالـ AI</td></tr>
+          <tr><td>Codex / Copilot</td><td>OpenAI / GitHub</td><td>مساعد كود</td><td>توليد و إكمال كود</td></tr>
+          <tr><td>Antigravity</td><td>Google</td><td>منصة وكلاء برمجة</td><td>بيئة تطوير agentic حول Gemini</td></tr>
+          <tr><td>Google AI Studio</td><td>Google</td><td>استوديو</td><td>تجربة Gemini و الـ prompts و الـ API</td></tr>
+          <tr><td>Vercel (+ v0)</td><td>Vercel</td><td>بناء / نشر</td><td>نشر فوري + توليد UI من نص (v0)</td></tr>
+          <tr><td>Supabase</td><td>Supabase</td><td>backend</td><td>Postgres + auth + storage مفتوح المصدر</td></tr>
+          <tr><td>Nano Banana Pro</td><td>Google (Gemini)</td><td>صور</td><td>توليد و تحرير صور عالي الدقة بالنص</td></tr>
+          <tr><td>Midjourney · Firefly</td><td>MJ · Adobe</td><td>صور</td><td>صور فنية / أصول تجارية آمنة</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">لا توجد «أفضل أداة» مطلقة — توجد أداة أنسب <strong>للمهمة</strong>. النماذج وراءها تتغيّر بسرعة، فركّز على الفئة و الوظيفة.
+      <div class="en">Tools are thin layers over fast-moving models. Learn the category (chat, search, coding agent, studio, backend, image, knowledge) — the leaderboard changes every few months.</div>
+    </div>
+  </section>
+
+  <!-- 2) AI AT WORK -->
+  <section id="career">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 02 · In Practice</div>
+    <h2>2) كيف تستخدمها في بيئة العمل؟</h2>
+    <p class="section-intro">الفكرة ليست «اسأل و انسخ»، بل أن تبني <strong>workflow</strong> يدمج الـ AI في كل خطوة: فهم → توسيع → تنفيذ → مراجعة. تعامل معه كزميل سريع لكنه يحتاج توجيهًا و تدقيقًا.</p></div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg></div><div class="tag">Research</div><h3>البحث و الفهم</h3><p>لخّص مستندات طويلة، قارن خيارات، و اسأل عمّا لا تفهمه قبل الاجتماعات.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 10-10-3-3L5 16z"/><path d="M14 6l3 3"/></svg></div><div class="tag">Writing</div><h3>الكتابة و التوثيق</h3><p>مسودات emails و تقارير و PRDs، و إعادة صياغة بنبرة مناسبة — ثم تحرّر أنت.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg></div><div class="tag">Coding</div><h3>البرمجة</h3><p>توليد boilerplate، شرح كود قديم، كتابة tests، و debugging و مراجعة PRs.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><div class="tag">Design</div><h3>التصميم</h3><p>أفكار UX، نصوص واجهات، حالات edge cases، و توليد variations سريعة.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/></svg></div><div class="tag">Data</div><h3>البيانات</h3><p>تحويل وصف لـ SQL، تحليل جداول، صياغة charts، و تفسير النتائج ببساطة.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-11 7l-5 2 2-5a8 8 0 1 1 14-4z"/></svg></div><div class="tag">Comms</div><h3>التواصل</h3><p>تلخيص اجتماعات، صياغة updates، ترجمة، و تحضير عروض و خطط.</p></div>
+    </div>
+    <div class="note warn reveal">احذر: لا ترفع بيانات سرية لأدوات عامة، تحقّق دائمًا من المخرجات (قد يخطئ بثقة — hallucination)، و لا تترك القرار النهائي للـ AI.
+      <div class="en">Guardrails: never paste secrets/PII into public tools, always verify output (models hallucinate confidently), and keep human judgment on final calls.</div>
+    </div>
+  </section>
+
+  <!-- 3) PICK THE TOOL -->
+  <section id="choose">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 03 · Decision Matrix</div>
+    <h2>3) متى تختار الأداة المناسبة؟</h2>
+    <p class="section-intro">اختر حسب طبيعة المهمة: تفكير؟ مصادر محدّثة؟ تنفيذ كود؟ صورة؟ هذا المسار يحسم الاختيار في ثوانٍ.</p></div>
+    <div class="viz reveal">
+      <div class="dtree">
+        <div class="dbranch"><div class="cond">تحتاج حقائق محدّثة؟</div><div class="tools"><span>Perplexity</span><span>Gemini</span><span>NotebookLM</span></div></div>
+        <div class="dbranch"><div class="cond">تنفيذ كود أو تعديل ملفات؟</div><div class="tools"><span>Claude Code</span><span>Cursor</span><span>Antigravity</span></div></div>
+        <div class="dbranch"><div class="cond">صورة أو تصميم بصري؟</div><div class="tools"><span>Nano Banana Pro</span><span>GPT Image</span><span>Midjourney</span></div></div>
+        <div class="dbranch"><div class="cond">تفكير عميق أو كتابة طويلة؟</div><div class="tools"><span>Claude</span><span>ChatGPT</span></div></div>
+        <div class="dbranch"><div class="cond">تجربة API أو نشر سريع؟</div><div class="tools"><span>Google AI Studio</span><span>Vercel</span></div></div>
+      </div>
+      <div class="viz-cap">شجرة قرار سريعة لاختيار الأداة حسب نوع المخرج</div>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>المهمة</th><th>الأداة المقترحة</th><th>لماذا</th></tr></thead>
+        <tbody>
+          <tr><td>تحليل/تفكير معقّد أو كتابة طويلة</td><td>Claude / ChatGPT (reasoning)</td><td>سياق طويل و استدلال أعمق</td></tr>
+          <tr><td>بحث بحقائق محدّثة + مصادر</td><td>Perplexity / Gemini</td><td>وصول للويب مع مراجع</td></tr>
+          <tr><td>الإجابة من مستنداتك الخاصة</td><td>NotebookLM</td><td>محصور في مصادرك أنت</td></tr>
+          <tr><td>مهمة برمجية كاملة عبر ملفات</td><td>Claude Code / Cursor / Antigravity</td><td>agentic — يقرأ، يعدّل، يشغّل</td></tr>
+          <tr><td>إكمال كود سريع داخل المحرر</td><td>Copilot / Codex</td><td>اقتراحات سطرية فورية</td></tr>
+          <tr><td>توليد صورة أو واجهة</td><td>Nano Banana Pro · GPT Image · v0</td><td>من نص إلى صورة/UI</td></tr>
+          <tr><td>تجربة الـ API و بناء prototype</td><td>Google AI Studio · Vercel</td><td>تجريب و نشر سريع</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">سؤال واحد يحسم: <strong>«ما المخرج الذي أحتاجه، و هل يتطلب حقائق محدّثة أو تنفيذًا فعليًا؟»</strong>
+      <div class="en">Ask one question: "What output do I need, and does it require fresh facts or real execution?" — that picks the tool.</div>
+    </div>
+  </section>
+
+  <!-- 4) CORE CONCEPTS -->
+  <section id="concepts">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 04 · The Vocabulary</div>
+    <h2>4) المفاهيم الأساسية</h2>
+    <p class="section-intro">لو فهمت هذه الكلمات الثماني، فهمت 80% من عالم الـ AI الحديث: <strong>LLM · Models · Agents · Skills · MCP · Tokens · Memory · Context</strong>. كل بطاقة فيها مثال عملي.</p></div>
+
+    <div class="viz reveal">
+      <div class="cflow">
+        <div class="cnode"><div class="t">Context</div><div class="s">ما يراه الآن</div></div>
+        <div class="carrow">&#8594;</div>
+        <div class="cnode big"><div class="t">LLM / Model</div><div class="s">predicts next token</div></div>
+        <div class="carrow">&#8594;</div>
+        <div class="cnode"><div class="t">Output</div><div class="s">tokens out</div></div>
+      </div>
+      <div class="cfeed">
+        <div class="cnode"><div class="t">Tools &#183; MCP</div></div>
+        <div class="cnode"><div class="t">Memory</div></div>
+        <div class="cnode"><div class="t">Skills</div></div>
+        <div class="cnode"><div class="t">Agent loop</div><div class="s">repeat</div></div>
+      </div>
+      <div class="viz-cap">كيف تترابط المفاهيم: السياق و الذاكرة و الأدوات و المهارات تغذّي النموذج، و الـ Agent يكرّر الحلقة</div>
+    </div>
+
+    <div class="grid stagger">
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg></div><div class="tag">LLM</div><h3>Large Language Model</h3><p>نموذج يتنبّأ بالكلمة التالية، دُرّب على كميات هائلة من النص. هو «المحرك» الذي يفهم و يولّد اللغة.</p><div class="ex"><span class="lbl">Example</span>تكتب «اشرح الـ JWT لمبتدئ» فيولّد شرحًا متدرّجًا — لأنه تعلّم أنماط اللغة و الشرح.</div></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v10l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></div><div class="tag">Models</div><h3>النماذج و أحجامها</h3><p>إصدارات بقدرات و سرعات و تكلفة مختلفة (صغير سريع رخيص / كبير أذكى أغلى). تختار حسب صعوبة المهمة.</p><div class="ex"><span class="lbl">Example</span>تصنيف رسائل بسيطة → نموذج <b>Haiku</b> السريع؛ تحليل عقد قانوني → نموذج <b>Opus</b> الأقوى.</div></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="11" rx="3"/><path d="M12 4v4"/><circle cx="9.5" cy="13" r="1"/><circle cx="14.5" cy="13" r="1"/></svg></div><div class="tag">Agents</div><h3>الوكلاء</h3><p>نموذج + قدرة على <strong>اتخاذ خطوات و استخدام أدوات</strong> في حلقة (خطّط → نفّذ → راقب → صحّح) حتى ينجز هدفًا.</p><div class="ex"><span class="lbl">Example</span>«أصلح هذا الـ bug» → الوكيل يقرأ الملفات، يعدّل الكود، يشغّل الـ tests، و يكرّر حتى تنجح.</div></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M10 3h4v4a2 2 0 1 0 0 4v3h-4v-3a2 2 0 1 1 0-4z"/><path d="M14 14h3v3a2 2 0 1 1-4 0"/></svg></div><div class="tag">Skills</div><h3>المهارات</h3><p>تعليمات/قدرات قابلة لإعادة الاستخدام تُحقن عند الحاجة (مثل «صمّم بأسلوب علامتنا»). تختصر التكرار و تضمن الاتساق.</p><div class="ex"><span class="lbl">Example</span>skill اسمه «brand-deck» يحوّل أي محتوى لشريحة بألوان و خطوط شركتك تلقائيًا.</div></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M7 8h10v3a5 5 0 0 1-10 0zM12 16v6"/></svg></div><div class="tag">MCP</div><h3>Model Context Protocol</h3><p>بروتوكول موحّد يربط النموذج بأدوات و مصادر خارجية (ملفات، APIs، DB). مثل «منفذ USB» للـ AI.</p><div class="ex"><span class="lbl">Example</span>تربط MCP بـ GitHub → الوكيل يقدر يقرأ الـ issues و يفتح PR مباشرة دون نسخ/لصق.</div></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 4L7 20M17 4l-2 16M4 9h16M3 15h16"/></svg></div><div class="tag">Tokens</div><h3>الـ Tokens</h3><p>وحدة النص التي يقرأ/يكتب بها النموذج (≈ ¾ كلمة). تحدّد التكلفة و حجم السياق.</p><div class="ex"><span class="lbl">Example</span>«Hello world» ≈ 2 tokens. مستند 1000 كلمة ≈ 1300 token — كلها تُحتسب في الفاتورة.</div></div>
+      <div class="card half feat"><div class="itile"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></svg></div><div class="tag">Memory</div><h3>الذاكرة</h3><p>ما يحتفظ به النموذج <strong>عبر الجلسات</strong> أو الخطوات: تفضيلاتك، حقائق المشروع، قرارات سابقة — تُخزَّن و تُسترجَع عند الحاجة.</p><div class="ex"><span class="lbl">Example</span>تقول مرة «أنا أفضّل TypeScript» فيتذكّرها في المحادثات القادمة دون أن تعيدها.</div></div>
+      <div class="card half feat"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/><path d="M7 7h.01"/></svg></div><div class="tag">Context</div><h3>السياق (Context)</h3><p>كل ما تضعه أمام النموذج <strong>في هذه اللحظة</strong>: السؤال + التعليمات + الملفات + المحادثة. محدود بحجم النافذة (context window).</p><div class="ex"><span class="lbl">Example</span>تلصق ملف الكود + الخطأ في نفس الرسالة → الإجابة أدق، لأن السياق كامل أمامه.</div></div>
+    </div>
+    <div class="note reveal">الفرق المهم: <strong>Context</strong> = ما يراه الآن (مؤقّت، محدود). <strong>Memory</strong> = ما يتذكّره لاحقًا (دائم، يُسترجَع). إتقانهما = نتائج أدق و أرخص.
+      <div class="en">Context = what the model sees right now (temporary, capped by the window). Memory = what it recalls later (persistent, retrieved). Mastering both = sharper, cheaper results.</div>
+    </div>
+  </section>
+
+  <!-- 5) THE HARNESS -->
+  <section id="harness">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 05 · The Scaffolding</div>
+    <h2>5) ما هو الـ "Harness"؟</h2>
+    <p class="section-intro">النموذج وحده «دماغ بلا أيدٍ». الـ <strong>Harness</strong> هو كل البنية حوله التي تحوّله لمنتج: الـ prompt، الأدوات، الذاكرة، حلقة التنفيذ، الاسترجاع، و الحواجز. جودة الـ harness غالبًا تفرق أكثر من جودة النموذج.</p></div>
+    <div class="viz reveal">
+      <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+        <g stroke="#A8CF38" stroke-width="1.2" opacity=".4" fill="none" stroke-dasharray="4 5">
+          <path d="M360 150 L160 70"/><path d="M360 150 L360 50"/><path d="M360 150 L560 70"/>
+          <path d="M360 150 L160 230"/><path d="M360 150 L360 250"/><path d="M360 150 L560 230"/>
+        </g>
+        <circle cx="360" cy="150" r="54" fill="url(#core)" opacity=".18"/>
+        <circle cx="360" cy="150" r="40" fill="url(#core)"/>
+        <text x="360" y="148" text-anchor="middle" font-size="14" font-weight="700" fill="#06210a">Model</text>
+        <text x="360" y="164" text-anchor="middle" font-size="8.5" font-family="JetBrains Mono,monospace" fill="#0a2a0a">the brain</text>
+        <g font-size="12" font-weight="600" fill="#fff">
+          <g><rect x="92" y="48" width="136" height="44" rx="11" fill="rgba(18,32,54,.92)" stroke="#A8CF38" stroke-opacity=".5"/><text x="160" y="75" text-anchor="middle">System Prompt</text></g>
+          <g><rect x="292" y="22" width="136" height="44" rx="11" fill="rgba(18,32,54,.92)" stroke="#A8CF38" stroke-opacity=".5"/><text x="360" y="49" text-anchor="middle">Tools</text></g>
+          <g><rect x="492" y="48" width="136" height="44" rx="11" fill="rgba(18,32,54,.92)" stroke="#A8CF38" stroke-opacity=".5"/><text x="560" y="75" text-anchor="middle">Memory · Context</text></g>
+          <g><rect x="92" y="208" width="136" height="44" rx="11" fill="rgba(18,32,54,.92)" stroke="#A8CF38" stroke-opacity=".5"/><text x="160" y="235" text-anchor="middle">Loop</text></g>
+          <g><rect x="292" y="234" width="136" height="44" rx="11" fill="rgba(18,32,54,.92)" stroke="#A8CF38" stroke-opacity=".5"/><text x="360" y="261" text-anchor="middle">Retrieval (RAG)</text></g>
+          <g><rect x="492" y="208" width="136" height="44" rx="11" fill="rgba(18,32,54,.92)" stroke="#A8CF38" stroke-opacity=".5"/><text x="560" y="235" text-anchor="middle">Guards · Evals</text></g>
+        </g>
+      </svg>
+      <div class="viz-cap">الـ Harness = النموذج في المركز، محاطًا بكل ما يجعله مفيدًا و آمنًا</div>
+    </div>
+    <h3 class="reveal" style="margin-top:30px">كيف تطوّر و تحسّن الـ Harness؟</h3>
+    <div class="steps reveal">
+      <div class="step"><h3>قِس قبل أن تحسّن</h3><p>ابنِ مجموعة اختبارات (evals) تمثّل مهامك الحقيقية، و قِس النجاح رقميًا.</p></div>
+      <div class="step"><h3>حسّن الـ context</h3><p>أعطِ النموذج المعلومة الصحيحة فقط في الوقت الصحيح — retrieval و تلخيص و تنظيف.</p></div>
+      <div class="step"><h3>أضِف أدوات أدق</h3><p>أدوات واضحة، محدودة، و موصوفة جيدًا تقلّل الأخطاء أكثر من أي prompt.</p></div>
+      <div class="step"><h3>كرّر على الـ prompt و الحلقة</h3><p>عدّل متغيّرًا واحدًا في كل مرة، قارن بالـ evals، و احتفظ بما يرفع النتيجة.</p></div>
+    </div>
+    <div class="note reveal">قاعدة ذهبية: <strong>«context engineering»</strong> (ماذا يرى النموذج) غالبًا أقوى من «prompt engineering» (كيف تطلب).
+      <div class="en">Most agent quality comes from the harness — context, tools, and loop — not a cleverer prompt. Measure with evals, then improve one variable at a time.</div>
+    </div>
+  </section>
+
+  <!-- 6) BUILD PRODUCTS -->
+  <section id="products">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 06 · Product Shapes</div>
+    <h2>6) بناء منتجات AI بأشكال مختلفة</h2>
+    <p class="section-intro">المنتجات الذكية تأخذ أشكالًا متعددة حسب التعقيد و الاعتماد على البيانات. القاعدة: ابدأ بأبسط شكل يحقّق القيمة، قِس، ثم اصعد السلّم.</p></div>
+
+    <div class="viz reveal">
+      <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+        <g>
+          <rect x="20" y="190" width="120" height="50" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".45"/>
+          <rect x="160" y="150" width="120" height="90" rx="10" fill="rgba(168,207,56,.13)" stroke="#A8CF38" stroke-opacity=".5"/>
+          <rect x="300" y="110" width="120" height="130" rx="10" fill="rgba(168,207,56,.16)" stroke="#A8CF38" stroke-opacity=".55"/>
+          <rect x="440" y="70" width="120" height="170" rx="10" fill="rgba(168,207,56,.19)" stroke="#A8CF38" stroke-opacity=".6"/>
+          <rect x="580" y="30" width="120" height="210" rx="10" fill="url(#core)" opacity=".9"/>
+        </g>
+        <g font-family="Space Grotesk, sans-serif" font-weight="700" font-size="13" fill="#fff" text-anchor="middle">
+          <text x="80" y="220">Wrapper</text>
+          <text x="220" y="200">RAG</text>
+          <text x="360" y="180">Agentic</text>
+          <text x="500" y="160">Multi-Agent</text>
+          <text x="640" y="140" fill="#06210a">Fine-tuned</text>
+        </g>
+        <g font-family="JetBrains Mono,monospace" font-size="8.5" fill="#8497AE" text-anchor="middle">
+          <text x="80" y="236">prompt</text>
+          <text x="220" y="216">+ knowledge</text>
+          <text x="360" y="196">+ tools</text>
+          <text x="500" y="176" fill="#CDE9A2">+ teamwork</text>
+          <text x="640" y="156" fill="#0a2a0a">+ training</text>
+        </g>
+        <path d="M20 250 H700" stroke="#A8CF38" stroke-opacity=".3" stroke-width="1"/>
+        <text x="20" y="20" font-family="JetBrains Mono,monospace" font-size="9" fill="#8497AE">↑ القدرة و التعقيد</text>
+      </svg>
+      <div class="viz-cap">سلّم البناء: كل درجة تضيف قدرة فوق ما قبلها — اصعدها حسب الحاجة لا حسب الحماس</div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>الشكل</th><th>الفكرة</th><th>التعقيد</th><th>مثال</th><th>متى تستخدمه</th></tr></thead>
+        <tbody>
+          <tr><td>Wrapper / Assistant</td><td>واجهة فوق نموذج بـ prompt محكم</td><td>منخفض</td><td>chatbot دعم، مساعد كتابة</td><td>أسرع طريق للقيمة</td></tr>
+          <tr><td>RAG App</td><td>نموذج + قاعدة معرفة خاصة بك</td><td>متوسط</td><td>«اسأل مستنداتنا»</td><td>تحتاج معرفة خاصة/محدّثة</td></tr>
+          <tr><td>Agentic App</td><td>وكيل يستخدم أدوات و ينفّذ مهام</td><td>عالٍ</td><td>وكيل برمجة، أتمتة عمليات</td><td>مهام متعددة الخطوات</td></tr>
+          <tr><td>Multi-Agent</td><td>وكلاء متخصصون ينسّقون معًا</td><td>عالٍ جدًا</td><td>بحث → كتابة → مراجعة</td><td>مهام كبيرة قابلة للتقسيم</td></tr>
+          <tr><td>Copilot مدمج</td><td>AI داخل منتج قائم</td><td>متوسط</td><td>اقتراحات داخل تطبيقك</td><td>تعزيز تجربة موجودة</td></tr>
+          <tr><td>Fine-tuned</td><td>نموذج مُدرّب على بياناتك</td><td>عالٍ</td><td>نبرة/مجال متخصص</td><td>عند ثبات المهمة و الحجم</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 01 · Wrapper</div>
+      <div class="cs-name">«مساعد دعم العملاء» لمتجر إلكتروني</div>
+      <div class="cs-sub">شركة صغيرة، فريق دعم مرهق، أسئلة متكررة</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>70% من تذاكر الدعم أسئلة متكررة (الشحن، الإرجاع) تستهلك وقت الفريق.</p></div>
+        <div><h4>المقاربة</h4><p>Wrapper بسيط: نموذج + system prompt فيه سياسات المتجر + نبرة العلامة، مدمج في الشات.</p></div>
+        <div><h4>النتيجة</h4><p>ردود فورية 24/7، و تحويل الحالات المعقّدة فقط لبشري.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>−60%</strong><span>زمن الرد</span></div>
+        <div class="cs-metric"><strong>3 أيام</strong><span>للإطلاق</span></div>
+        <div class="cs-metric"><strong>+22%</strong><span>رضا العملاء</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Prompt</span><span class="cs-tag">No training</span><span class="cs-tag">Fast value</span></div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 02 · RAG</div>
+      <div class="cs-name">«اسأل قاعدة المعرفة» لفريق منتج</div>
+      <div class="cs-sub">توثيق ضخم متناثر بين Notion و PDFs و Slack</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>الموظف الجديد يضيع أيامًا بحثًا عن قرارات و سياسات موثّقة في أماكن متفرّقة.</p></div>
+        <div><h4>المقاربة</h4><p>RAG: فهرسة كل المصادر في vector DB، و النموذج يجيب من المقاطع الأقرب مع روابط المصدر.</p></div>
+        <div><h4>النتيجة</h4><p>إجابات مرجعية دقيقة، و onboarding أسرع بكثير.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>−75%</strong><span>وقت البحث</span></div>
+        <div class="cs-metric"><strong>5k+</strong><span>مستند مفهرس</span></div>
+        <div class="cs-metric"><strong>100%</strong><span>إجابات بمصدر</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Vector DB</span><span class="cs-tag">Retrieval</span><span class="cs-tag">Citations</span></div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 03 · Agentic</div>
+      <div class="cs-name">«وكيل برمجة» يصلح bugs و يفتح PRs</div>
+      <div class="cs-sub">فريق هندسي يغرق في تذاكر صيانة صغيرة</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>عشرات الـ bugs الصغيرة تؤجَّل لأنها «مهمة بس مملة» و تأكل وقت المطوّرين.</p></div>
+        <div><h4>المقاربة</h4><p>Agent (Claude Code + MCP لـ GitHub): يقرأ التذكرة، يعدّل الكود، يشغّل الـ tests، يفتح PR للمراجعة.</p></div>
+        <div><h4>النتيجة</h4><p>المطوّر يراجع بدل أن يكتب من الصفر — إنتاجية أعلى مع إبقاء البشر في القرار.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>4×</strong><span>تذاكر/أسبوع</span></div>
+        <div class="cs-metric"><strong>−50%</strong><span>وقت المطوّر</span></div>
+        <div class="cs-metric"><strong>PR</strong><span>دائمًا بمراجعة بشرية</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Agent loop</span><span class="cs-tag">MCP</span><span class="cs-tag">Tests</span></div>
+    </div>
+
+    <div class="note reveal">مبدأ البناء الضخم: <strong>ابدأ صغيرًا، قِس، ثم وسّع</strong>. أغلب المنتجات الناجحة بدأت Wrapper بسيط ثم تطوّرت لـ RAG ثم Agentic.
+      <div class="en">Scale ladder: Wrapper → RAG → Agentic → Multi-agent. Ship the simplest shape that delivers value, measure, then climb.</div>
+    </div>
+  </section>
+
+  <!-- 7) MIND-MAP -->
+  <section id="mindmap">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 07 · See the Whole</div>
+    <h2>7) ارسم الصورة الكاملة (Mind-Map)</h2>
+    <p class="section-intro">المفاهيم متفرّقة تُنسى؛ المفاهيم <strong>المترابطة</strong> تُفهم و تبقى. الخريطة الذهنية تحوّل كل ما سبق إلى صورة واحدة ترى فيها العلاقات لا القوائم. هذه نقطة بداية — وسّعها بنفسك حتى تصير مرجعك الحي.</p></div>
+    <div class="viz reveal">
+      <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI mind map">
+        <g stroke="#A8CF38" stroke-width="1.3" opacity=".45" fill="none">
+          <path d="M380 190 C300 130 240 100 150 90"/><path d="M380 190 C300 110 250 70 360 60"/>
+          <path d="M380 190 C470 130 540 105 620 90"/><path d="M380 190 C300 260 240 290 150 300"/>
+          <path d="M380 190 C420 260 470 290 380 330"/><path d="M380 190 C470 260 540 290 620 300"/>
+        </g>
+        <circle cx="380" cy="190" r="48" fill="url(#core)"/>
+        <text x="380" y="186" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="15" font-weight="700" fill="#06210a">AI</text>
+        <text x="380" y="203" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8" fill="#0a2a0a">UNIVERSE</text>
+        <g font-family="Space Grotesk, sans-serif" font-size="12.5" font-weight="600" fill="#fff" text-anchor="middle">
+          <g><rect x="68" y="70" width="124" height="38" rx="10" fill="rgba(18,32,54,.95)" stroke="#A8CF38" stroke-opacity=".5"/><text x="130" y="94">Tools</text></g>
+          <g><rect x="298" y="40" width="124" height="38" rx="10" fill="rgba(18,32,54,.95)" stroke="#A8CF38" stroke-opacity=".5"/><text x="360" y="64">Concepts</text></g>
+          <g><rect x="558" y="70" width="134" height="38" rx="10" fill="rgba(18,32,54,.95)" stroke="#A8CF38" stroke-opacity=".5"/><text x="625" y="94">Harness</text></g>
+          <g><rect x="68" y="282" width="124" height="38" rx="10" fill="rgba(18,32,54,.95)" stroke="#A8CF38" stroke-opacity=".5"/><text x="130" y="306">Agents</text></g>
+          <g><rect x="316" y="312" width="128" height="38" rx="10" fill="rgba(18,32,54,.95)" stroke="#A8CF38" stroke-opacity=".5"/><text x="380" y="336">Products</text></g>
+          <g><rect x="558" y="282" width="134" height="38" rx="10" fill="rgba(18,32,54,.95)" stroke="#A8CF38" stroke-opacity=".5"/><text x="625" y="306">Build a Model</text></g>
+        </g>
+        <g font-family="JetBrains Mono, monospace" font-size="8.5" fill="#8497AE" text-anchor="middle">
+          <text x="130" y="128">Claude · GPT · Gemini · Cursor</text>
+          <text x="360" y="96">LLM · Tokens · MCP · Memory</text>
+          <text x="625" y="128">Prompt · Tools · Loop · Evals</text>
+          <text x="130" y="338">Plan · Act · Observe · CLAUDE.md</text>
+          <text x="380" y="366">Wrapper · RAG · Agentic · Multi</text>
+          <text x="625" y="338">Data · Train · Align · Deploy</text>
+        </g>
+      </svg>
+      <div class="viz-cap">خريطة ذهنية لعالم الـ AI — المركز ثم ستة فروع، كل فرع يقابل فصلًا في هذا الدليل</div>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><h3>ابدأ بالمركز</h3><p>اكتب الموضوع في المنتصف («AI»)، ثم الفروع الكبرى حوله.</p></div>
+      <div class="step"><h3>فرّع و اربط</h3><p>كل فرع يتفرّع لمفاهيم أصغر، و ارسم خطوطًا بين المترابطات.</p></div>
+      <div class="step"><h3>أضِف مثالًا لكل عقدة</h3><p>المثال يثبّت المفهوم في ذاكرتك أكثر من التعريف المجرّد.</p></div>
+      <div class="step"><h3>راجِع و وسّع دوريًا</h3><p>كل ما تتعلّم جديدًا، ألحقه بالخريطة — تصبح مرجعك الحي.</p></div>
+    </div>
+    <div class="pilllist reveal"><span class="p">Miro</span><span class="p">FigJam</span><span class="p">Excalidraw</span><span class="p">XMind</span><span class="p">أو ورقة و قلم</span></div>
+  </section>
+
+  <!-- 8) CLAUDE CODE & CODEX -->
+  <section id="mastery">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 08 · Tooling Mastery</div>
+    <h2>8) الاحتراف في Claude Code و Codex</h2>
+    <p class="section-intro">هذه أدوات «وكيل برمجة» — تقرأ مشروعك، تعدّل ملفات، تشغّل أوامر، و تنفّذ مهامًا كاملة. الاحتراف = توجيه دقيق + استغلال المزايا المتقدمة.</p></div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>المستوى</th><th>التركيز</th><th>ما تتقنه</th></tr></thead>
+        <tbody>
+          <tr><td>مبتدئ</td><td>الأساسيات</td><td>أوامر واضحة، طلب تعديل/شرح ملف، قراءة المخرجات</td></tr>
+          <tr><td>متوسط</td><td>السياق</td><td>ملف توجيه للمشروع (CLAUDE.md/AGENTS.md)، slash commands، تقسيم المهام</td></tr>
+          <tr><td>متقدّم</td><td>التوسعة</td><td>MCP servers، sub-agents، hooks، أتمتة سير العمل</td></tr>
+          <tr><td>محترف</td><td>الإنتاجية</td><td>workflows متعددة الوكلاء، evals، دمجها في CI/CD</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 11l3 3 5-6"/></svg></div><div class="tag">Tip 01</div><h3>اكتب خطة أولًا</h3><p>اطلب خطة قبل التنفيذ، راجعها، ثم نفّذ — يقلّل الأخطاء كثيرًا.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13h6M9 17h4"/></svg></div><div class="tag">Tip 02</div><h3>ثبّت السياق</h3><p>ملف توجيه للمشروع يشرح البنية و القواعد = نتائج أدق و أثبت.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="6" rx="1.5"/></svg></div><div class="tag">Tip 03</div><h3>مهام صغيرة</h3><p>قسّم المهمة الكبيرة لخطوات قابلة للمراجعة و الـ commit.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 5-6"/><path d="M21 12a9 9 0 1 1-6.2-8.5"/></svg></div><div class="tag">Tip 04</div><h3>اطلب tests</h3><p>اجعله يكتب و يشغّل الاختبارات للتحقق من نفسه.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/><path d="M13 5l-2 14"/></svg></div><div class="tag">Tip 05</div><h3>راجِع الـ diff</h3><p>لا تدمج بثقة عمياء — اقرأ التغييرات دائمًا.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M7 8h10v3a5 5 0 0 1-10 0zM12 16v6"/></svg></div><div class="tag">Tip 06</div><h3>وسّع بـ MCP</h3><p>اربطه بأدواتك (Git, DB, تصميم) ليصبح أقوى.</p></div>
+    </div>
+    <div class="note reveal">المحترف لا يكتب prompt أطول — بل يبني <strong>بيئة</strong> أفضل: سياق واضح، أدوات موصولة، و حلقة مراجعة.
+      <div class="en">Mastery = better environment, not longer prompts. Plan-first, small reviewable steps, a project context file, tests, and MCP-connected tools.</div>
+    </div>
+  </section>
+
+  <!-- 9) CLAUDE.md & AGENTS.md -->
+  <section id="context-files">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 09 · Project Memory</div>
+    <h2>9) أهمية ملف CLAUDE.md (و نظائره)</h2>
+    <p class="section-intro">ملف <strong>CLAUDE.md</strong> هو «ذاكرة المشروع» التي يقرأها الوكيل تلقائيًا في كل جلسة: يشرح البنية، القواعد، الأوامر، و الأسلوب. بدله تعيد شرح مشروعك كل مرة؛ معه يبدأ الوكيل و هو «يعرف بيتك».</p></div>
+
+    <div class="grid stagger">
+      <div class="card half feat"><div class="itile"><svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 12h6M9 16h6"/></svg></div><div class="tag">Why</div><h3>لماذا هو مهم؟</h3><p>يحوّل الوكيل من «غريب ذكي» إلى «عضو فريق يعرف السياق». نتائج أدق، أخطاء أقل، و اتساق مع معايير الفريق دون تكرار.</p></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></div><div class="tag">What goes in</div><h3>ماذا تضع فيه؟</h3><p>نظرة على البنية، أوامر التشغيل و الاختبار، اصطلاحات الكود و التسمية، ما يجب تجنّبه، و روابط مهمة. اجعله موجزًا و حيًّا.</p></div>
+    </div>
+
+    <div class="filecard reveal">
+      <div class="filecard-bar"><span class="d"></span>CLAUDE.md</div>
+      <pre><span class="c"># Project: Acme Dashboard</span>
+
+<span class="k">## Stack</span>
+Next.js 16 · TypeScript · Tailwind · Supabase
+
+<span class="k">## Commands</span>
+- dev:   `npm run dev`
+- test:  `npm test`
+- build: `npm run build`
+
+<span class="k">## Conventions</span>
+- Components in `src/components`, one per file.
+- Prefer server components; mark client with "use client".
+- Never commit secrets; use `.env.local`.
+
+<span class="k">## Avoid</span>
+- Don't edit `generated/` — it's auto-built.</pre>
+    </div>
+
+    <div class="reveal"><h3 style="margin-top:30px">نفس الفكرة في الأدوات الأخرى</h3>
+    <p class="section-intro">كل وكيل تقريبًا له «ملف ذاكرة مشروع» بنفس المبدأ — يختلف الاسم فقط:</p></div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>الأداة</th><th>اسم الملف</th><th>ملاحظة</th></tr></thead>
+        <tbody>
+          <tr><td>Claude Code</td><td>CLAUDE.md</td><td>يُقرأ تلقائيًا؛ يدعم ملفات متداخلة لكل مجلد</td></tr>
+          <tr><td>Codex / وكلاء عامون</td><td>AGENTS.md</td><td>معيار مفتوح شائع لتوجيه الوكلاء</td></tr>
+          <tr><td>Cursor</td><td>.cursor/rules (أو .cursorrules)</td><td>قواعد المشروع للـ AI داخل المحرر</td></tr>
+          <tr><td>GitHub Copilot</td><td>.github/copilot-instructions.md</td><td>تعليمات مخصّصة للمستودع</td></tr>
+          <tr><td>Gemini CLI</td><td>GEMINI.md</td><td>نفس المبدأ لأدوات Google</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">أفضل ممارسة: ابدأ ملفًا صغيرًا، و كل ما تصحّح للوكيل شيئًا متكررًا — أضِفه للملف. هكذا «يتعلّم» مشروعك بمرور الوقت.
+      <div class="en">Best practice: start small and treat the file as living memory — every time you correct the agent on something recurring, add it. Over time the project teaches itself to the agent.</div>
+    </div>
+  </section>
+
+  <!-- 10) AGENT ENVIRONMENTS -->
+  <section id="agents">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 10 · Open Agent Stacks</div>
+    <h2>10) بيئات الـ Agents (مثل OpenClaw و Hermes)</h2>
+    <p class="section-intro">«بيئة الوكيل» (agent environment / runtime) هي البرمجية التي تشغّل الوكيل: تدير الحلقة، تعطيه أدوات، sandbox آمن، و ذاكرة. الأسماء تتغيّر بسرعة، لكن <strong>البنية واحدة</strong>.</p></div>
+    <div class="viz reveal">
+      <svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+        <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6z" fill="#CDE9A2"/></marker></defs>
+        <g font-size="13" font-weight="700" fill="#06210a" text-anchor="middle">
+          <g><circle cx="130" cy="120" r="52" fill="url(#core)"/><text x="130" y="116">Perceive</text><text x="130" y="134" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">يقرأ الهدف</text></g>
+          <g><circle cx="350" cy="60" r="52" fill="url(#core)"/><text x="350" y="56">Plan</text><text x="350" y="74" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">يخطّط</text></g>
+          <g><circle cx="570" cy="120" r="52" fill="url(#core)"/><text x="570" y="116">Act</text><text x="570" y="134" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">ينفّذ أداة</text></g>
+          <g><circle cx="350" cy="190" r="50" fill="url(#core)" opacity=".92"/><text x="350" y="186">Observe</text><text x="350" y="204" font-size="9" font-family="JetBrains Mono,monospace" font-weight="500">يراقب النتيجة</text></g>
+        </g>
+        <g stroke="#CDE9A2" stroke-width="1.8" fill="none" opacity=".7" marker-end="url(#ar2)">
+          <path d="M178 102 C 240 70 280 64 296 64"/>
+          <path d="M402 64 C 470 70 510 92 524 104"/>
+          <path d="M556 168 C 500 196 440 196 404 192"/>
+          <path d="M300 188 C 220 182 180 162 168 150"/>
+        </g>
+      </svg>
+      <div class="viz-cap">حلقة الوكيل الأساسية — تتكرّر حتى يتحقّق الهدف أو يتوقّف</div>
+    </div>
+    <div class="grid stagger">
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2"/><path d="M18 4v4h-4M6 20v-4h4"/></svg></div><div class="tag">ما هي؟</div><h3>Agent Runtime</h3><p>إطار يحوّل النموذج لوكيل عملي: يقرأ الهدف، يخطّط، يستدعي أدوات، يلاحظ، و يكرّر داخل بيئة معزولة. أمثلة من النظام المفتوح: أطر للوكلاء البرمجية و وكلاء سطح المكتب و الـ orchestration.</p></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 3v3M15 3v3M9 18v3M15 18v3M3 9h3M3 15h3M18 9h3M18 15h3"/></svg></div><div class="tag">Hermes & co.</div><h3>نماذج مفتوحة للوكلاء</h3><p>سلاسل مثل Hermes (من Nous Research) نماذج مفتوحة مضبوطة على <strong>استدعاء الأدوات / function-calling</strong> — تجعل النماذج المفتوحة صالحة لتشغيل وكلاء دون الاعتماد على واجهات مغلقة.</p></div>
+    </div>
+    <h3 class="reveal" style="margin-top:26px">المكوّنات المشتركة</h3>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2"/></svg></div><div class="tag">Loop</div><h3>حلقة الوكيل</h3><p>perceive → plan → act → observe، مع شرط توقّف.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M15 4a4 4 0 0 0-5 5L4 15l3 3 6-6a4 4 0 0 0 5-5l-2.5 2.5-2-2z"/></svg></div><div class="tag">Tools</div><h3>سجل الأدوات</h3><p>تعريف الأدوات و صلاحياتها و كيفية استدعائها.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v10l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg></div><div class="tag">Sandbox</div><h3>بيئة معزولة</h3><p>تنفيذ آمن للأوامر و الكود دون أذى للنظام.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/></svg></div><div class="tag">Memory</div><h3>الذاكرة</h3><p>قصيرة (السياق) و طويلة (تخزين/استرجاع).</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3 20a6 6 0 0 1 12 0M14 20a5 5 0 0 1 7 0"/></svg></div><div class="tag">Orchestrator</div><h3>المنسّق</h3><p>يوزّع المهام بين وكلاء و يجمع النتائج.</p></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><div class="tag">Policy</div><h3>الحوكمة</h3><p>أذونات، حدود، و مراقبة و تسجيل.</p></div>
+    </div>
+    <div class="note warn reveal">منظومة الـ open agents تتحرّك بسرعة و الأسماء تتبدّل — تعلّم <strong>البنية</strong> (حلقة + أدوات + sandbox + ذاكرة) و ستفهم أي إطار جديد فورًا. راجِع دائمًا توثيق المشروع الرسمي قبل الاعتماد عليه.
+      <div class="en">The open-agent ecosystem moves fast and names churn. Learn the architecture — loop, tool registry, sandbox, memory, orchestrator, policy — and any new framework (or model line like Hermes) becomes readable instantly. Always verify against each project's official docs.</div>
+    </div>
+  </section>
+
+  <!-- 11) AUTOMATIONS -->
+  <section id="automations">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 11 · No-Code Automation</div>
+    <h2>11) الأتمتة و أدواتها (Automations)</h2>
+    <p class="section-intro">الأتمتة تربط تطبيقاتك ببعضها فتعمل وحدها: «لو حدث X نفّذ Y». أدوات الـ no-code مثل <strong>n8n</strong> و <strong>Zapier</strong> و <strong>Make</strong> تتيح بناء سير عمل (workflows) بدون كود — و دمج الـ AI كخطوة ذكية داخلها يحوّلها إلى «وكيل بلا برمجة».</p></div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2"/><path d="M18 4v4h-4M6 20v-4h4"/></svg></div><div class="tag">n8n</div><h3>n8n</h3><p>مفتوح المصدر و قابل للاستضافة الذاتية، مرن جدًا، يدعم كودًا مخصّصًا و عقد AI. الأنسب للفرق التقنية و حسّاسية الخصوصية.</p><div class="ex"><span class="lbl">Example</span>workflow: بريد جديد → استخراج البيانات بـ LLM → حفظ في Notion → تنبيه على Slack.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div><div class="tag">Zapier</div><h3>Zapier</h3><p>الأسهل و الأوسع تكاملًا (آلاف التطبيقات)، سحابي بالكامل. الأنسب لغير التقنيين و البدء السريع.</p><div class="ex"><span class="lbl">Example</span>Zap: نموذج Typeform → صف جديد في Google Sheets → رسالة ترحيب تلقائية.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><div class="tag">Make</div><h3>Make (Integromat)</h3><p>محرّر بصري قوي للسيناريوهات المعقّدة بمنطق و فروع و حلقات، بسعر مناسب.</p><div class="ex"><span class="lbl">Example</span>سيناريو: طلب جديد → توليد فاتورة PDF → إرسالها بالبريد → تحديث الـ CRM.</div></div>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>الأداة</th><th>النوع</th><th>الأفضل لـ</th><th>الميزة</th></tr></thead>
+        <tbody>
+          <tr><td>n8n</td><td>مفتوح / استضافة ذاتية</td><td>الفرق التقنية، الخصوصية</td><td>مرونة + عقد AI + كود</td></tr>
+          <tr><td>Zapier</td><td>سحابي</td><td>غير التقنيين، السرعة</td><td>أوسع التكاملات</td></tr>
+          <tr><td>Make</td><td>سحابي</td><td>سيناريوهات معقّدة</td><td>محرّر بصري + سعر</td></tr>
+          <tr><td>+ AI nodes</td><td>داخل كل ما سبق</td><td>قرارات و توليد نص</td><td>LLM كخطوة في الـ workflow</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">القوة الحقيقية: <strong>أتمتة + AI</strong>. اربط مشغّلًا (trigger) بخطوة LLM بخطوة فعل، فتختصر ساعات عمل يدوي إلى ثوانٍ تلقائية.
+      <div class="en">The real power: automation + AI. Wire a trigger → an LLM step → an action, and hours of manual work become automatic — a "no-code agent".</div>
+    </div>
+  </section>
+
+  <!-- 12) BUILD A MODEL -->
+  <section id="scratch">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 12 · Under the Hood</div>
+    <h2>12) مقدمة: بناء نموذج AI من الصفر</h2>
+    <p class="section-intro">لن تبني GPT في عطلة أسبوع، لكن فهم الـ pipeline يجعلك مستخدمًا أذكى و مهندسًا أفضل. هذه الخطوات الكبرى من البيانات إلى النشر.</p></div>
+    <div class="viz reveal">
+      <svg viewBox="0 0 720 130" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+        <defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="5" refY="3" orient="auto"><path d="M0 0L5 3L0 6z" fill="#A8CF38"/></marker></defs>
+        <g font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle">
+          <g><rect x="8" y="40" width="92" height="48" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".5"/><text x="54" y="62" fill="#fff" font-weight="700">Data</text><text x="54" y="77" fill="#8497AE" font-size="8">جمع/تنظيف</text></g>
+          <g><rect x="118" y="40" width="92" height="48" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".5"/><text x="164" y="62" fill="#fff" font-weight="700">Tokenizer</text><text x="164" y="77" fill="#8497AE" font-size="8">تقطيع</text></g>
+          <g><rect x="228" y="40" width="92" height="48" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".5"/><text x="274" y="62" fill="#fff" font-weight="700">Architecture</text><text x="274" y="77" fill="#8497AE" font-size="8">Transformer</text></g>
+          <g><rect x="338" y="40" width="96" height="48" rx="10" fill="url(#core)"/><text x="386" y="62" fill="#06210a" font-weight="700">Pre-train</text><text x="386" y="77" fill="#0a2a0a" font-size="8">الأغلى</text></g>
+          <g><rect x="452" y="40" width="86" height="48" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".5"/><text x="495" y="62" fill="#fff" font-weight="700">Fine-tune</text><text x="495" y="77" fill="#8497AE" font-size="8">SFT</text></g>
+          <g><rect x="556" y="40" width="70" height="48" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".5"/><text x="591" y="62" fill="#fff" font-weight="700">Align</text><text x="591" y="77" fill="#8497AE" font-size="8">RLHF</text></g>
+          <g><rect x="644" y="40" width="68" height="48" rx="10" fill="rgba(168,207,56,.10)" stroke="#A8CF38" stroke-opacity=".5"/><text x="678" y="62" fill="#fff" font-weight="700">Deploy</text><text x="678" y="77" fill="#8497AE" font-size="8">Serve</text></g>
+        </g>
+        <g stroke="#A8CF38" stroke-width="1.5" opacity=".55" marker-end="url(#ar3)"><path d="M100 64h16"/><path d="M210 64h16"/><path d="M320 64h16"/><path d="M434 64h16"/><path d="M538 64h16"/><path d="M626 64h16"/></g>
+      </svg>
+      <div class="viz-cap">خط أنابيب بناء النموذج — من النص الخام إلى API يخدم المستخدمين</div>
+    </div>
+    <div class="steps reveal">
+      <div class="step"><h3>البيانات (Data)</h3><p>جمع و تنظيف نصوص ضخمة و متنوعة — الجودة هنا تحدّد سقف النموذج كله.</p></div>
+      <div class="step"><h3>التقطيع (Tokenizer)</h3><p>تحويل النص إلى tokens (وحدات) يفهمها النموذج رقميًا.</p></div>
+      <div class="step"><h3>المعمارية (Architecture)</h3><p>اختيار بنية — غالبًا Transformer مع طبقات الـ attention.</p></div>
+      <div class="step"><h3>التدريب المسبق (Pre-training)</h3><p>تدريب على التنبؤ بالكلمة التالية عبر مليارات الأمثلة — أغلى مرحلة حاسوبيًا.</p></div>
+      <div class="step"><h3>الضبط (Fine-tuning / SFT)</h3><p>تدريب موجّه على أمثلة «تعليمات → استجابة» ليتبع التعليمات.</p></div>
+      <div class="step"><h3>المواءمة (Alignment · RLHF/DPO)</h3><p>تحسين السلوك ليكون مفيدًا و آمنًا حسب تفضيلات بشرية.</p></div>
+      <div class="step"><h3>التقييم (Evaluation)</h3><p>قياس الأداء و الأمان على اختبارات متنوعة قبل الإطلاق.</p></div>
+      <div class="step"><h3>النشر (Deploy & Serve)</h3><p>تحسين السرعة و التكلفة (quantization, caching) و التقديم عبر API.</p></div>
+    </div>
+    <div class="note reveal">للتعلّم العملي ابدأ صغيرًا: درّب نموذجًا صغيرًا (nano/char-level) لتفهم الميكانيكا، ثم اصعد. الأساس رياضيات + Python + PyTorch.
+      <div class="en">Learn by building a tiny model first (char-level / nano-GPT) to feel the mechanics, then scale. Foundation: linear algebra, probability, Python, PyTorch.</div>
+    </div>
+  </section>
+
+  <!-- 12) LEARNING PATH -->
+  <section id="learning">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 13 · The Roadmap</div>
+    <h2>13) خريطة تعلّم: من استخدام الـ AI إلى بنائه</h2>
+    <p class="section-intro">رحلة من «مستخدم» إلى «باني». كل مرحلة تبني على ما قبلها — لا تقفز قبل أن تتقن الأساس.</p></div>
+    <div class="kpis reveal">
+      <div class="kpi"><strong><span class="count" data-to="4">0</span></strong><span>مراحل متدرّجة</span></div>
+      <div class="kpi"><strong><span class="count" data-to="13">0</span></strong><span>فصول في الدليل</span></div>
+      <div class="kpi"><strong><span class="count" data-to="8">0</span></strong><span>مفاهيم أساسية</span></div>
+      <div class="kpi"><strong><span class="count" data-to="100">0</span><u>%</u></strong><span>عملي بالتطبيق</span></div>
+    </div>
+    <div class="viz reveal">
+      <svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
+        <path d="M40 170 L220 130 L420 90 L660 40" stroke="#A8CF38" stroke-width="2" fill="none" opacity=".5" stroke-dasharray="6 6"/>
+        <g text-anchor="middle">
+          <g><circle cx="40" cy="170" r="13" fill="url(#core)"/><text x="40" y="175" font-size="11" font-weight="700" fill="#06210a">1</text><text x="40" y="150" font-family="Space Grotesk,sans-serif" font-size="12" font-weight="600" fill="#fff">مستخدم واثق</text></g>
+          <g><circle cx="220" cy="130" r="13" fill="url(#core)"/><text x="220" y="135" font-size="11" font-weight="700" fill="#06210a">2</text><text x="220" y="110" font-family="Space Grotesk,sans-serif" font-size="12" font-weight="600" fill="#fff">مستخدم متقدّم</text></g>
+          <g><circle cx="420" cy="90" r="13" fill="url(#core)"/><text x="420" y="95" font-size="11" font-weight="700" fill="#06210a">3</text><text x="420" y="70" font-family="Space Grotesk,sans-serif" font-size="12" font-weight="600" fill="#fff">باني تطبيقات</text></g>
+          <g><circle cx="660" cy="40" r="14" fill="url(#core)"/><text x="660" y="45" font-size="11" font-weight="700" fill="#06210a">4</text><text x="660" y="20" font-family="Space Grotesk,sans-serif" font-size="12" font-weight="600" fill="#fff">مهندس AI</text></g>
+        </g>
+        <g font-family="JetBrains Mono,monospace" font-size="8.5" fill="#8497AE" text-anchor="middle">
+          <text x="40" y="190">prompting</text><text x="220" y="190">Claude Code · MCP</text><text x="420" y="190">RAG · agents · evals</text><text x="660" y="190">PyTorch · training</text>
+        </g>
+      </svg>
+      <div class="viz-cap">مسار صاعد: كل محطة تفتح التي بعدها</div>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>المرحلة</th><th>التركيز</th><th>المهارات</th><th>المخرج</th></tr></thead>
+        <tbody>
+          <tr><td>1 · مستخدم واثق</td><td>استخدام الأدوات</td><td>prompting، اختيار الأداة، التحقّق</td><td>تسرّع شغلك اليومي بالـ AI</td></tr>
+          <tr><td>2 · مستخدم متقدّم</td><td>دمج في الـ workflow</td><td>Claude Code، MCP، أتمتة، skills، CLAUDE.md</td><td>تبني سير عمل ذكي مكرّر</td></tr>
+          <tr><td>3 · باني تطبيقات</td><td>منتجات AI</td><td>APIs، RAG، agents، evals</td><td>تطلق منتج/feature ذكي</td></tr>
+          <tr><td>4 · مهندس AI</td><td>النماذج نفسها</td><td>Python، PyTorch، transformers، fine-tuning</td><td>تدرّب و تنشر نماذج</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">المبدأ الأهم: <strong>تعلّم بالبناء</strong>. أنجز مشروعًا صغيرًا حقيقيًا في كل مرحلة — هو ما يحوّل المعرفة إلى مهارة.
+      <div class="en">Learn by shipping. Finish one small real project per stage — that is what turns reading into skill. Use AI today; understand it deeply tomorrow.</div>
+    </div>
+  </section>
+
+  <div class="footer">AI Field Guide · companion to the Product Design &amp; Production Roadmaps · internal bilingual handout.</div>
+  </main>
+
+  <!-- ============= UI / UX STUDIES PAGE ============= -->
+  <main class="page" data-page="uiux">
+
+  <!-- HERO -->
+  <section class="hero-section reveal" id="ux-top">
+    <div class="hero-layout">
+      <div class="hero-left">
+        <div class="hero-pre">UI / UX Studies · A Learning Journey</div>
+        <div class="hero-name-group">
+          <div class="hero-for">From zero to</div>
+          <h1 class="hero-name">UI<span style="color:var(--fog3)">/</span>UX<br><em>Hero</em></h1>
+          <div class="hero-subtitle">Fundamentals · Process · Craft · Career</div>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-body">
+          <p class="lead">رحلة تعلّم ممتعة في عالم تصميم تجربة و واجهة المستخدم — من الصفر إلى الاحتراف. كل فصل فيه شرح مبسّط، مثال عملي، و قصص نجاح حقيقية. من الفرق بين UI و UX، مرورًا بالأبحاث و المبادئ البصرية و الألوان و الخطوط و الحركة و الإتاحة، وصولًا إلى خريطة تصبح بها مصمّمًا محترفًا.</p>
+          <p class="en" style="border:none;padding:0;margin-top:10px">Sixteen chapters that take you from "what is UX?" to a portfolio-ready designer — every concept paired with a real work example and success cases.</p>
+        </div>
+      </div>
+      <div class="hero-right">
+        <svg viewBox="0 0 380 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="UI design canvas">
+          <defs>
+            <radialGradient id="uxg" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#CDE9A2"/><stop offset="60%" stop-color="#A8CF38"/><stop offset="100%" stop-color="#5D9842"/></radialGradient>
+            <linearGradient id="uxc" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="rgba(18,32,54,.96)"/><stop offset="100%" stop-color="rgba(13,27,43,.96)"/></linearGradient>
+          </defs>
+          <ellipse cx="190" cy="210" rx="160" ry="188" fill="url(#uxg)" opacity=".10"/>
+          <!-- main artboard -->
+          <g transform="rotate(-3 190 210)">
+            <rect x="96" y="70" width="188" height="284" rx="16" fill="url(#uxc)" stroke="rgba(168,207,56,.4)" stroke-width="1.4"/>
+            <rect x="96" y="70" width="188" height="30" rx="16" fill="rgba(168,207,56,.10)"/>
+            <circle cx="114" cy="85" r="3.4" fill="#A8CF38"/><circle cx="126" cy="85" r="3.4" fill="rgba(205,233,162,.6)"/><circle cx="138" cy="85" r="3.4" fill="rgba(132,151,174,.5)"/>
+            <!-- hero block -->
+            <rect x="112" y="116" width="156" height="52" rx="9" fill="rgba(168,207,56,.08)" stroke="rgba(168,207,56,.22)"/>
+            <rect x="124" y="130" width="74" height="7" rx="3.5" fill="rgba(255,255,255,.22)"/>
+            <rect x="124" y="144" width="116" height="5" rx="2.5" fill="rgba(168,207,56,.4)"/>
+            <!-- cards -->
+            <rect x="112" y="182" width="48" height="44" rx="8" fill="rgba(168,207,56,.06)" stroke="rgba(168,207,56,.25)"/>
+            <rect x="166" y="182" width="48" height="44" rx="8" fill="rgba(168,207,56,.06)" stroke="rgba(168,207,56,.25)"/>
+            <rect x="220" y="182" width="48" height="44" rx="8" fill="rgba(168,207,56,.06)" stroke="rgba(168,207,56,.25)"/>
+            <!-- lines -->
+            <rect x="112" y="240" width="156" height="5" rx="2.5" fill="rgba(255,255,255,.09)"/>
+            <rect x="112" y="251" width="128" height="5" rx="2.5" fill="rgba(255,255,255,.07)"/>
+            <!-- CTA -->
+            <rect x="112" y="272" width="156" height="36" rx="10" fill="url(#uxg)"/>
+            <rect x="166" y="286" width="48" height="8" rx="4" fill="#0a2a0a"/>
+            <circle cx="150" cy="330" r="3.4" fill="#A8CF38"/><circle cx="164" cy="330" r="2.6" fill="rgba(255,255,255,.18)"/><circle cx="176" cy="330" r="2.6" fill="rgba(255,255,255,.18)"/>
+          </g>
+          <!-- floating swatches -->
+          <g class="hf0"><rect x="14" y="120" width="74" height="40" rx="11" fill="url(#uxc)" stroke="rgba(168,207,56,.45)"/><circle cx="32" cy="140" r="7" fill="#A8CF38"/><circle cx="48" cy="140" r="7" fill="#7CB342"/><circle cx="64" cy="140" r="7" fill="#CDE9A2"/></g>
+          <!-- floating type card -->
+          <g class="hf1"><rect x="290" y="86" width="78" height="46" rx="11" fill="url(#uxc)" stroke="rgba(168,207,56,.45)"/><text x="329" y="116" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-size="22" font-weight="700" fill="#CDE9A2">Aa</text></g>
+          <!-- floating grid card -->
+          <g class="hf2"><rect x="292" y="288" width="74" height="52" rx="11" fill="url(#uxc)" stroke="rgba(168,207,56,.45)"/><g stroke="rgba(168,207,56,.5)" stroke-width="1.2"><path d="M304 300v28M318 300v28M332 300v28M346 300v28"/></g></g>
+          <!-- cursor -->
+          <g class="hf0" transform="translate(250,250)"><path d="M0 0l16 6-6 2-2 6z" fill="#CDE9A2" stroke="#A8CF38" stroke-width="1"/></g>
+          <!-- dots -->
+          <circle cx="26" cy="220" r="2.2" fill="rgba(168,207,56,.5)"/><circle cx="356" cy="200" r="1.8" fill="rgba(205,233,162,.6)"/><circle cx="40" cy="330" r="2" fill="rgba(168,207,56,.35)"/><circle cx="346" cy="150" r="1.6" fill="rgba(168,207,56,.45)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+
+<section id="ux-intro">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 01 · Foundations</div>
+    <h2>1) ما هو الـ UI/UX؟</h2>
+    <p class="section-intro">قبل أي أداة وأي برنامج، لازم نفرّق بين كلمتين بنخلطهم كتير: الـ UX (التجربة) والـ UI (الواجهة). ببساطة — الـ UX يسأل: "هل المستخدم وصل لهدفه بسهولة؟"، والـ UI يسأل: "هل الشكل واضح ومريح وجميل؟". الاثنان معًا يصنعان منتجًا الناس بتحبه وترجع له.</p>
+    <div class="en">Before any tool, separate two ideas: UX (the experience — did the user reach their goal easily?) and UI (the interface — is it clear, comfortable, and good-looking?). Together they make a product people love and return to.</div></div>
+
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div><div class="tag">UX · Experience</div><h3>تجربة المستخدم (UX)</h3><p>هي الرحلة كاملة: هل المستخدم يفهم الخطوة التالية؟ هل يصل لهدفه بأقل احتكاك وأقل تفكير؟ الـ UX منطق ومسار وشعور — لا علاقة لها بالألوان بعد.</p><div class="ex"><span class="lbl">Example</span>في تطبيق توصيل طعام: هل أقدر أكمّل الطلب من أول شاشة للدفع في 4 خطوات بدون ما أحتار؟ هذا سؤال UX.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div><div class="tag">UI · Interface</div><h3>واجهة المستخدم (UI)</h3><p>هي الطبقة المرئية: الألوان، الخطوط، المسافات، شكل الأزرار وأماكنها. مهمتها تخلي المسار اللي صمّمه الـ UX واضحًا وجميلًا وسهل اللمس.</p><div class="ex"><span class="lbl">Example</span>في نفس تطبيق التوصيل: لون زر "اطلب الآن" أخضر بارز، حجمه كبير، وثابت أسفل الشاشة عشان الإبهام يوصله بسهولة. هذا قرار UI.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><div class="tag">Relationship</div><h3>العلاقة بينهما</h3><p>الـ UX هو الهيكل والمنطق، والـ UI هو اللباس والشكل. واجهة جميلة فوق تجربة سيئة = إحباط أنيق. وتجربة ممتازة بواجهة مشوّشة = جهد ضائع. النجاح يحتاج الاثنين معًا.</p><div class="ex"><span class="lbl">Example</span>زر دفع تصميمه رائع (UI ممتاز) لكنه في مكان لا أحد يلاحظه فيضيع الطلب (UX سيئ) — النتيجة فشل رغم جمال الزر.</div></div>
+    </div>
+
+    <div class="note reveal">تشبيه يثبّت الفكرة — جهاز التحكم (الريموت) في التلفزيون: <strong>الـ UX</strong> هو "هل أوصل للقناة اللي أبيها بسرعة وبأقل ضغطات؟"، أمّا <strong>الـ UI</strong> فهو "ترتيب الأزرار وأحجامها وألوانها": زر التشغيل أحمر ومميّز، أزرار الصوت كبيرة وتحت الإبهام مباشرة، والأرقام مرتّبة بشكل منطقي. ريموت بأزرار جميلة لكن مبعثرة = UI حلو وUX سيئ. لا تبدأ بالألوان قبل ما تتأكد إن المسار نفسه منطقي وسهل.
+    <div class="en">Think of a TV remote: UX is "can I reach the channel I want fast, with the fewest presses?" while UI is the layout — a red power button, big thumb-reachable volume keys, logically ordered numbers. Beautiful but scattered buttons = good UI, bad UX. Never start with colors before the path itself makes sense.</div></div>
+  </section>
+
+<section id="ux-process">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 02 · The Process</div>
+    <h2>2) رحلة التصميم (Design Thinking)</h2>
+    <p class="section-intro">التفكير التصميمي ليس وصفة جامدة، بل طريقة في التفكير تبدأ من <strong>الإنسان</strong> لا من الشاشة. خمس مراحل تنقلك من «ماذا يحتاج الناس فعلًا؟» إلى حلٍّ مُختبَر بين أيديهم: <strong>Empathize → Define → Ideate → Prototype → Test</strong>. سنمشي خلالها معًا عبر مثال واحد متكامل: تطبيق توصيل طعام.</p></div>
+
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/></svg></div><div class="tag">Empathize</div><h3>التعاطف — افهم المستخدم</h3><p>اخرج من رأسك إلى عالم المستخدم: قابِله، راقبه، استمع لما يقوله و ما لا يقوله. الهدف فهم احتياجاته و مشاعره و سياقه، لا جمع الآراء فقط.</p><div class="ex"><span class="lbl">Example</span>قابلنا 8 مستخدمين فاكتشفنا أن أكثر لحظة توتر ليست الطلب، بل انتظار «أين السائق؟» دون معرفة وقت الوصول الفعلي.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h13l-2 4 2 4H5"/></svg></div><div class="tag">Define</div><h3>التحديد — صُغ المشكلة</h3><p>حوّل ما جمعته إلى عبارة مشكلة واحدة واضحة (Problem Statement). مشكلة محددة جيدًا = نصف الحل. تجنّب صياغة الحل داخل المشكلة.</p><div class="ex"><span class="lbl">Example</span>عبارة المشكلة: «الجائع الذي طلب وجبته يحتاج إلى يقين لحظي بمكان طلبه و وقت وصوله — لأن الغموض يحوّل الجوع إلى قلق.»</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></div><div class="tag">Ideate</div><h3>توليد الأفكار — تخيّل بحرية</h3><p>اعصف ذهنيًا بأكبر عدد من الحلول دون حكم مبكر. الكمية أولًا، ثم نُصفّي. أغرب فكرة قد تكون شرارة لأفضل حل.</p><div class="ex"><span class="lbl">Example</span>طرحنا 14 فكرة: خريطة حية، شريط تقدّم، إشعار «اقترب سائقك»، صوت طرق الباب، صورة الوجبة وهي تُحضَّر… اخترنا أقواها أثرًا.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg></div><div class="tag">Prototype</div><h3>النمذجة — اصنع نسخة سريعة</h3><p>ابنِ نموذجًا بسيطًا و رخيصًا يكفي لاختبار الفكرة — ورقة، Wireframe، أو نموذج تفاعلي في Figma. الهدف التعلّم بأقل تكلفة، لا الكمال.</p><div class="ex"><span class="lbl">Example</span>صنعنا Prototype تفاعلي في Figma لشاشة التتبّع: خريطة + شريط مراحل (يُحضَّر → خرج → اقترب → وصل) في يومين فقط.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg></div><div class="tag">Test</div><h3>الاختبار — تعلّم من الواقع</h3><p>ضع النموذج بين يدي مستخدمين حقيقيين و راقب: أين يتعثّرون؟ ماذا يتوقّعون؟ كل ملاحظة وقود للتحسين، و كل «فشل» مبكّر يوفّر كلفة كبيرة لاحقًا.</p><div class="ex"><span class="lbl">Example</span>أثناء الاختبار اكتشفنا أن المستخدمين لم يفهموا أيقونة «خرج للتوصيل» — فاستبدلناها بنص صريح: «طلبك في الطريق إليك الآن».</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M15 4a4 4 0 0 0-5 5L4 15l3 3 6-6a4 4 0 0 0 5-5l-2.5 2.5-2-2z"/></svg></div><div class="tag">Mindset</div><h3>العقلية قبل الخطوات</h3><p>هذه المراحل أدوات تفكير لا قيود. ركّز على المستخدم، تبنَّ التجريب، و لا تخف من رمي فكرة لا تنجح. النضج هو معرفة متى تتقدّم و متى تعود خطوة.</p><div class="ex"><span class="lbl">Example</span>بعد الاختبار عُدنا لمرحلة Define لأن المشكلة الحقيقية اتّضح أنها «الثقة في وقت الوصول» لا «شكل الخريطة».</div></div>
+    </div>
+
+    <h3 class="reveal" style="margin-top:30px">المراحل الخمس بالترتيب — تطبيقًا على «تطبيق توصيل طعام»</h3>
+    <div class="steps reveal">
+      <div class="step"><h3>Empathize · التعاطف</h3><p>مقابلات و ملاحظة ميدانية مع 8 مستخدمين أثناء طلبهم الفعلي. النتيجة: لحظة الانتظار بعد الطلب هي مصدر القلق الأكبر، لا عملية الطلب نفسها.</p></div>
+      <div class="step"><h3>Define · التحديد</h3><p>صياغة عبارة مشكلة واحدة: «المستخدم الجائع يحتاج يقينًا لحظيًا بمكان طلبه و وقت وصوله.» مع خريطة رحلة (Journey Map) تُبرز نقطة الألم.</p></div>
+      <div class="step"><h3>Ideate · توليد الأفكار</h3><p>عصف ذهني لـ 14 فكرة، ثم تصويت و تجميع حسب الأثر مقابل الجهد. الفائز: خريطة حيّة + شريط مراحل واضح + إشعار «اقترب سائقك».</p></div>
+      <div class="step"><h3>Prototype · النمذجة</h3><p>نموذج تفاعلي منخفض الكلفة في Figma لشاشة التتبّع خلال يومين — لا كتابة كود، فقط ربط شاشات لمحاكاة التجربة.</p></div>
+      <div class="step"><h3>Test · الاختبار</h3><p>اختبار قابلية الاستخدام مع 5 مستخدمين. النتائج تعود لتغذّي المراحل السابقة: عدّلنا الأيقونات و النصوص، ثم أعدنا الاختبار.</p></div>
+    </div>
+
+    <div class="note reveal">انتبه: التفكير التصميمي <strong>حلقة تتكرّر، لا خط مستقيم</strong>. كثيرًا ما تعود من الاختبار إلى التحديد، أو من النمذجة إلى توليد الأفكار. كل دورة تجعل فهمك أعمق و حلّك أنضج — التراجع خطوة ليس فشلًا، بل جوهر العملية.
+      <div class="en">Design Thinking is an iterative loop, not a straight line. You'll often jump back — from Test to Define, or Prototype to Ideate. Each loop sharpens the problem and the solution. Looping back is the method working, not failing.</div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 01 · Food Delivery</div>
+      <div class="cs-name">«وصّلني» — إعادة تصميم شاشة تتبّع الطلب</div>
+      <div class="cs-sub">تطبيق توصيل طعام · فريق منتج صغير · دورتان من Design Thinking</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>ارتفاع رسائل الدعم «أين طلبي؟» و تقييمات سلبية رغم سرعة التوصيل الفعلية. القلق كان مصدره الغموض لا التأخير، فالمستخدم لا يرى ما يحدث بعد ضغط «اطلب».</p></div>
+        <div><h4>المقاربة</h4><p>مررنا بالمراحل الخمس: تعاطف عبر مقابلات، تحديد لعبارة مشكلة دقيقة، توليد 14 فكرة، نمذجة سريعة في Figma، ثم اختبار مع 5 مستخدمين. عُدنا دورة ثانية بعد كشف أن المشكلة هي «الثقة في الوقت».</p></div>
+        <div><h4>النتيجة</h4><p>شاشة تتبّع بخريطة حيّة و شريط مراحل و وقت وصول تقديري واضح. انخفضت رسائل «أين طلبي؟» بشكل ملحوظ و ارتفع رضا المستخدمين عن مرحلة الانتظار.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>-62%</strong><span>رسائل دعم «أين طلبي؟»</span></div>
+        <div class="cs-metric"><strong>+24%</strong><span>رضا عن تجربة الانتظار</span></div>
+        <div class="cs-metric"><strong>2</strong><span>دورتا تكرار قبل الإطلاق</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Empathize</span><span class="cs-tag">Define</span><span class="cs-tag">Ideate</span><span class="cs-tag">Prototype</span><span class="cs-tag">Test</span><span class="cs-tag">Figma</span><span class="cs-tag">Usability Testing</span></div>
+    </div>
+  </section>
+
+<section id="ux-research">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 03 · Discover</div>
+    <h2>3) أبحاث المستخدم (User Research)</h2>
+    <p class="section-intro">قبل ما ترسم أي شاشة، لازم تفهم: مين المستخدم؟ وإيش المشكلة الحقيقية اللي يعاني منها؟ أبحاث المستخدم هي الطريقة اللي تحوّل بها التخمين إلى قرار مبني على دليل — وهي أرخص بكثير من إعادة بناء منتج خاطئ.</p>
+    <div class="en">User research turns guesses into evidence-based decisions. Understanding who your users are and what problem they actually face is far cheaper than rebuilding the wrong product later.</div></div>
+
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/></svg></div><div class="tag">Interviews</div><h3>المقابلات</h3><p>محادثة 1-إلى-1 مع مستخدم حقيقي لفهم الدوافع والسلوك والإحباطات بعمق. اسأل "ليش؟" أكثر من "إيش؟".</p><div class="ex"><span class="lbl">Example</span>تطبيق توصيل: 8 مقابلات كشفت أن المستخدمين يلغون الطلب ليس بسبب السعر، بل لأن وقت الوصول غير واضح.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2"/></svg></div><div class="tag">Surveys</div><h3>الاستبيانات</h3><p>وسيلة سريعة لجمع بيانات كميّة من عدد كبير. ممتازة لقياس الاتجاهات، لكنها لا تفسّر "ليش".</p><div class="ex"><span class="lbl">Example</span>استبيان لـ 240 مستخدم أظهر أن 63% يستخدمون البحث بدل التصفّح — قرار: تكبير شريط البحث في الصفحة الرئيسية.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg></div><div class="tag">Usability Testing</div><h3>اختبار قابلية الاستخدام</h3><p>تعطي المستخدم مهمة وتراقبه وهو يحاول إنجازها على النموذج. تكشف نقاط الارتباك الحقيقية بسرعة.</p><div class="ex"><span class="lbl">Example</span>5 مستخدمين حاولوا إكمال الدفع؛ 4 منهم لم يجدوا زر "تطبيق الكوبون" — تم نقله أعلى الملخّص.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg></div><div class="tag">Competitor Analysis</div><h3>تحليل المنافسين</h3><p>دراسة كيف يحلّ المنافسون نفس المشكلة: ماذا ينجح، أين الفجوات، وما الفرصة التي يمكنك أخذها.</p><div class="ex"><span class="lbl">Example</span>مقارنة 3 تطبيقات حجز عيادات: كلها تطلب تسجيل قبل عرض المواعيد — الفرصة: عرض المواعيد أولًا ثم التسجيل.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/></svg></div><div class="tag">Persona</div><h3>الـ Persona</h3><p>شخصية تمثيلية مبنية على بيانات حقيقية، تختصر "مين نصمّم له". تشمل الاسم، الهدف، والإحباط الأساسي.</p><div class="ex"><span class="lbl">Persona</span>سارة، 29، أم عاملة. الهدف: ترتيب بقالة الأسبوع في أقل من 5 دقائق. الإحباط: تكرار إدخال نفس الطلبات كل مرة.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div><div class="tag">Journey · Flow</div><h3>الـ Journey & Flow</h3><p>Journey Map يرسم رحلة المستخدم العاطفية عبر المراحل، أمّا User Flow فيرسم المسار المنطقي للخطوات والقرارات داخل الواجهة.</p><div class="ex"><span class="lbl">Example</span>Journey لرحلة "إرجاع منتج" أظهر نقطة إحباط واحدة كبيرة: انتظار رد الدعم 48 ساعة → أُضيف إرجاع ذاتي فوري.</div></div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>الأداة</th><th>ماذا تجيب؟</th><th>متى تستخدمها؟</th><th>نوع البيانات</th></tr></thead>
+        <tbody>
+          <tr><td>Persona</td><td>لمن نصمّم؟</td><td>بداية المشروع، لتوحيد فهم الفريق</td><td>تمثيلي مبني على بحث</td></tr>
+          <tr><td>Journey Map</td><td>كيف يشعر المستخدم عبر الرحلة؟</td><td>لاكتشاف نقاط الألم العاطفية</td><td>نوعي · Qualitative</td></tr>
+          <tr><td>User Flow</td><td>ما المسار من نقطة A إلى B؟</td><td>قبل الـ wireframing</td><td>منطقي · خطوات وقرارات</td></tr>
+          <tr><td>Usability Test</td><td>أين يتعثّر المستخدم فعلًا؟</td><td>على النموذج قبل الإطلاق</td><td>سلوكي · Behavioral</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><h3>1) حدّد سؤال البحث</h3><p>اكتب سؤالًا واحدًا واضحًا تريد الإجابة عليه. مثال: "لماذا لا يكمل المستخدمون عملية التسجيل؟" — لا تبدأ البحث بلا هدف.</p></div>
+      <div class="step"><h3>2) اختر الأداة المناسبة</h3><p>سؤال "كم؟" يعني استبيان. سؤال "ليش؟" يعني مقابلة. سؤال "هل ينجح التصميم؟" يعني اختبار قابلية استخدام.</p></div>
+      <div class="step"><h3>3) اجمع وحلّل</h3><p>ابحث عن الأنماط المتكررة، لا الآراء الفردية. ثلاثة مستخدمين يذكرون نفس المشكلة = إشارة حقيقية تستحق الفعل.</p></div>
+      <div class="step"><h3>4) حوّل النتائج إلى قرار</h3><p>كل نتيجة يجب أن تنتهي بقرار تصميمي. بحث بلا قرار = وقت ضائع. لخّص في Persona + Journey + قائمة فرص.</p></div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 01 · User Research</div>
+      <div class="cs-name">Madrasti — منصّة متابعة دراسية لأولياء الأمور</div>
+      <div class="cs-sub">Discovery sprint · أسبوعان · معدّل تفعيل منخفض بعد التسجيل</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>المنصّة تسجّل آلاف الحسابات شهريًا، لكن 71% من أولياء الأمور لا يفتحون التطبيق مرة ثانية. الفريق كان يخمّن أن السبب هو "كثرة الإشعارات".</p></div>
+        <div><h4>المقاربة</h4><p>6 مقابلات + استبيان لـ 180 ولي أمر + اختبار قابلية استخدام على النموذج. بُني persona أساسي وJourney Map لأول 3 أيام بعد التسجيل.</p></div>
+        <div><h4>النتيجة</h4><p>السبب الحقيقي لم يكن الإشعارات — بل أن الشاشة الأولى فارغة حتى تربط المدرسة الطفل يدويًا. أُضيف ربط تلقائي عبر الرقم الوطني + شاشة "أول قيمة" تعرض درجات الطفل فورًا.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>+44%</strong><span>Return rate (week 1)</span></div>
+        <div class="cs-metric"><strong>-71%</strong><span>Empty first-screen exits</span></div>
+        <div class="cs-metric"><strong>6</strong><span>Interviews that changed the brief</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Interviews</span><span class="cs-tag">Survey</span><span class="cs-tag">Usability Test</span><span class="cs-tag">Persona</span><span class="cs-tag">Journey Map</span></div>
+      <div class="en" style="margin-top:14px">Madrasti had a 71% one-and-done problem the team blamed on notifications. Research revealed the real cause: an empty first screen until a child was manually linked. Auto-linking plus a "first value" screen lifted week-1 return rate by 44 points.</div>
+    </div>
+
+    <div class="note reveal">ابحث قبل أن تصمّم. كل ساعة بحث توفّر أيامًا من إعادة التصميم — والمستخدم الحقيقي دائمًا يفاجئك بشيء لم يخطر ببالك.<div class="en">Research before you design. An hour of research saves days of redesign — real users will always surprise you with something you never assumed.</div></div>
+
+    <div class="pilllist reveal"><span class="p">Figma</span><span class="p">Maze</span><span class="p">Google Forms</span><span class="p">Notion</span><span class="p">FigJam</span><span class="p">Dovetail</span></div>
+  </section>
+
+<section id="ux-ia">
+  <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 04 · Structure</div>
+  <h2>4) هندسة المعلومات (IA)</h2>
+  <p class="section-intro">هندسة المعلومات هي فن تنظيم المحتوى وتسميته وربطه بحيث يجد المستخدم ما يريده بأقل عدد من القرارات. قبل أي شاشة أو لون، نرسم الهيكل: ماذا يوجد؟ أين يقع؟ كيف يتنقّل المستخدم بينه؟ هذا الفصل يأخذك من التسلسل الهرمي إلى الـ sitemap عبر أدوات عملية مثل card sorting.</p></div>
+
+  <div class="grid stagger">
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><div class="tag">Hierarchy</div><h3>التسلسل الهرمي</h3><p>ترتيب المحتوى من العام إلى الخاص في طبقات واضحة (أقسام ← فئات ← منتجات). كل طبقة تجيب على سؤال واحد، فلا يُغرق المستخدم بكل شيء دفعة واحدة.</p><div class="ex"><span class="lbl">Example</span>في متجر إلكتروني: الرئيسية ← «ملابس رجالي» ← «أحذية» ← «أحذية رياضية» ← صفحة المنتج. ثلاث نقرات تكفي للوصول.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div><div class="tag">Navigation</div><h3>التنقّل (Navigation)</h3><p>الشريط العلوي، القائمة الجانبية، الـ breadcrumbs، والفوتر — كلها وسائل تخبر المستخدم «أين أنا؟» و«إلى أين أذهب؟». تنقّل واضح يقلل الارتباك ومعدل الخروج.</p><div class="ex"><span class="lbl">Example</span>Mega menu في المتجر يعرض الأقسام الرئيسية عند الـ hover، مع breadcrumb «الرئيسية › رجالي › أحذية» يتيح الرجوع خطوة دون ضياع.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><div class="tag">Card Sorting</div><h3>الـ Card Sorting</h3><p>أسلوب بحثي تُعطي فيه المستخدمين بطاقات بأسماء عناصر ويرتّبونها في مجموعات منطقية بالنسبة لهم. النتيجة: بنية مبنية على عقل المستخدم لا على هيكل الشركة الداخلي.</p><div class="ex"><span class="lbl">Example</span>open card sort على 30 منتجاً مع 8 مستخدمين كشف أنهم يبحثون عن «هدايا» كفئة مستقلة — أُضيفت للقائمة فارتفع اكتشاف المنتجات.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></div><div class="tag">Sitemap</div><h3>خريطة الموقع (Sitemap)</h3><p>مخطّط شجري يعرض كل صفحات المنتج وعلاقاتها قبل التصميم. هي «المخطّط المعماري» الذي يتفق عليه الفريق ويكشف الصفحات المنسيّة أو المكرّرة مبكراً.</p><div class="ex"><span class="lbl">Example</span>sitemap للمتجر فصل «حسابي» إلى: الطلبات، العناوين، طرق الدفع، المفضّلة — بدلاً من صفحة واحدة مزدحمة.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 6h14M12 6v13M9 19h6"/></svg></div><div class="tag">Labeling</div><h3>التسمية (Labeling)</h3><p>اختيار كلمات الفئات والأزرار بلغة المستخدم لا بلغة الفريق التقني. التسمية الخاطئة تُخفي محتوى موجوداً وكأنه غير موجود.</p><div class="ex"><span class="lbl">Example</span>تغيير زر «إتمام المعاملة» إلى «أكمل الشراء» وفئة «المنسوجات» إلى «ملابس» قلّل أسئلة الدعم حول مكان الأقسام.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg></div><div class="tag">Findability</div><h3>سهولة الوصول</h3><p>قابلية اكتشاف المحتوى عبر التصفّح أو البحث أو الفلاتر. حتى أفضل بنية تحتاج بحثاً داخلياً قوياً وفلاتر منطقية للمكتبات الكبيرة من المنتجات.</p><div class="ex"><span class="lbl">Example</span>إضافة فلاتر «المقاس / اللون / السعر» + بحث يقترح تصحيحات إملائية رفع نسبة من يجدون منتجهم من أول محاولة.</div></div>
+  </div>
+
+  <h3 class="reveal">مثال عملي: شجرة محتوى لمتجر إلكتروني</h3>
+  <div class="table-wrap reveal"><table><thead><tr><th>المستوى</th><th>المحتوى (Node)</th><th>الوظيفة</th></tr></thead><tbody>
+    <tr><td>L0 · الجذر</td><td>الصفحة الرئيسية</td><td>نقطة الدخول + إبراز العروض والأقسام الرئيسية</td></tr>
+    <tr><td>L1 · الأقسام</td><td>رجالي · نسائي · أطفال · هدايا</td><td>التقسيم الأعلى حسب الجمهور (نتيجة card sorting)</td></tr>
+    <tr><td>L2 · الفئات</td><td>ملابس · أحذية · إكسسوارات</td><td>تضييق النطاق داخل كل قسم</td></tr>
+    <tr><td>L3 · الفئات الفرعية</td><td>أحذية رياضية · أحذية رسمية</td><td>صفحة قائمة منتجات (PLP) + فلاتر</td></tr>
+    <tr><td>L4 · المنتج</td><td>صفحة المنتج (PDP)</td><td>التفاصيل + الإضافة للسلة</td></tr>
+    <tr><td>مسارات أفقية</td><td>السلة · الدفع · حسابي · البحث</td><td>وظائف عابرة للأقسام متاحة من أي صفحة</td></tr>
+  </tbody></table></div>
+
+  <div class="steps reveal">
+    <div class="step"><h3>1) اجمع المحتوى (Content Inventory)</h3><p>اكتب قائمة بكل صفحة وعنصر يحتاجه المنتج. لا تنظّم بعد — فقط احصر ما لديك لتعرف الحجم الحقيقي.</p></div>
+    <div class="step"><h3>2) شغّل Card Sorting</h3><p>أعطِ مستخدمين حقيقيين بطاقات العناصر ودعهم يجمّعونها ويسمّون المجموعات. هذا يكشف نموذجهم الذهني (Mental Model).</p></div>
+    <div class="step"><h3>3) ارسم الـ Sitemap</h3><p>حوّل المجموعات إلى شجرة هرمية بمستويات واضحة، وحدّد المسارات الأفقية كالبحث والسلة.</p></div>
+    <div class="step"><h3>4) اختبر بالـ Tree Testing</h3><p>اطلب من مستخدمين إنجاز مهمة («جد حذاءً رياضياً») داخل الشجرة نصّياً قبل التصميم، وقِس نسبة النجاح ومكان الضياع.</p></div>
+  </div>
+
+  <div class="note reveal">البنية الواضحة تعني مستخدماً لا يضيع. حين يعرف المستخدم دائماً أين هو وكيف يصل لما يريد، تختفي نصف مشاكل الـ UX قبل أن نرسم أي شاشة. هندسة المعلومات الجيدة غير مرئية — لا يلاحظها أحد، لكن غيابها يلاحظه الجميع.
+  <div class="en">Clear structure means a user who never gets lost. Good information architecture is invisible — no one notices it, but everyone feels its absence. Fix the structure first, and half your UX problems disappear before a single screen is designed.</div></div>
+
+  <div class="cs reveal">
+    <div class="cs-label">Case Study 04 · Information Architecture</div>
+    <div class="cs-name">إعادة هيكلة متجر «سوق» للإلكترونيات</div>
+    <div class="cs-sub">IA redesign · 3 weeks · 1,200 منتجاً · مشكلة اكتشاف وتصفّح</div>
+    <div class="cs-body">
+      <div><h4>التحدّي</h4><p>قائمة تنقّل ضخمة بـ 40 فئة في مستوى واحد، وأسماء فئات بلغة المورّدين («وحدات طرفية»). المستخدمون يعتمدون على البحث فقط، ومعدل الوصول للمنتج عبر التصفّح كان منخفضاً جداً.</p></div>
+      <div><h4>المقاربة</h4><p>content inventory شامل، ثم open card sorting مع 12 مستخدماً أعاد تجميع الفئات إلى 6 أقسام بلغتهم. بنينا sitemap بثلاثة مستويات + breadcrumbs، واختبرناه بـ tree testing على 5 مهام قبل التصميم.</p></div>
+      <div><h4>النتيجة</h4><p>نسبة نجاح إيجاد المنتج عبر التصفّح ارتفعت بوضوح، انخفض الاعتماد على البحث وحده، وأصبح المستخدمون يكتشفون فئات لم يكونوا يعرفون بوجودها.</p></div>
+    </div>
+    <div class="cs-metrics">
+      <div class="cs-metric"><strong>+38%</strong><span>Task success (tree test)</span></div>
+      <div class="cs-metric"><strong>40→6</strong><span>Top-level categories</span></div>
+      <div class="cs-metric"><strong>-24%</strong><span>Search-only sessions</span></div>
+    </div>
+    <div class="cs-tags"><span class="cs-tag">Card Sorting</span><span class="cs-tag">Sitemap</span><span class="cs-tag">Tree Testing</span><span class="cs-tag">Labeling</span></div>
+  </div>
+
+  <div class="kpis reveal">
+    <div class="kpi"><strong><span class="count" data-to="3">0</span></strong><span>نقرات كحد أقصى للوصول للمنتج</span></div>
+    <div class="kpi"><strong><span class="count" data-to="6">0</span></strong><span>أقسام رئيسية في القائمة</span></div>
+    <div class="kpi"><strong><span class="count" data-to="12">0</span></strong><span>مستخدماً في الـ card sort</span></div>
+    <div class="kpi"><strong><span class="count" data-to="4">0</span></strong><span>مستويات في الـ sitemap</span></div>
+  </div>
+
+  <div class="pilllist reveal"><span class="p">Figma</span><span class="p">FigJam</span><span class="p">Optimal Workshop</span><span class="p">Maze</span><span class="p">Miro</span><span class="p">OptimalSort</span><span class="p">Treejack</span></div>
+</section>
+
+<section id="ux-wireframe">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 05 · Sketch</div>
+    <h2>5) Wireframes و Prototypes</h2>
+    <p class="section-intro">قبل ما تفتح الألوان والخطوط، اسأل نفسك: هل التدفّق نفسه منطقي؟ الـ wireframe بيختبر الفكرة والترتيب بأرخص وأسرع طريقة، والـ prototype بيخلّي الفكرة قابلة للتجربة قبل ما نصرف يوم واحد على UI كامل.</p>
+    <div class="en">Before opening colors and fonts, test the flow itself. A wireframe validates structure cheaply and fast; a prototype makes it testable before you spend a single day on full UI.</div></div>
+
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 6h14M9 12h11M9 18h11"/><path d="M4 12l1 1 2-2"/></svg></div><div class="tag">Lo-fi</div><h3>منخفض الدقة</h3><p>مربعات وخطوط ونص placeholder. الهدف ترتيب العناصر والتدفّق فقط — مفيش لون ولا خط ولا أيقونة نهائية. يتعمل في دقائق ويترمى بدون ندم.</p><div class="ex"><span class="lbl">Example</span>رسمة على ورقة لشاشة دفع: مستطيل «ملخّص الطلب»، حقل «الكوبون»، زر كبير «ادفع الآن» — كله رمادي بدون تفاصيل.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><div class="tag">Mid-fi</div><h3>متوسط الدقة</h3><p>على Figma: spacing حقيقي، grid، نصوص فعلية، وتسلسل بصري واضح للأزرار والحقول — لكن بالأبيض والرمادي. هنا نحسم الـ hierarchy والترتيب قبل الهوية.</p><div class="ex"><span class="lbl">Example</span>شاشة الدفع نفسها على Figma: 4 حقول مرتّبة، زر CTA بعرض كامل أسفل الشاشة، وخطوة «المراجعة» منفصلة عن «الدفع».</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div><div class="tag">Hi-fi</div><h3>عالي الدقة</h3><p>التصميم النهائي: ألوان الهوية، الخطوط، الأيقونات، الصور، والـ states (hover / error / loading). قريب جدًا من المنتج الحقيقي وجاهز للـ handoff.</p><div class="ex"><span class="lbl">Example</span>شاشة الدفع بالألوان الكاملة: زر «ادفع الآن» باللون الأخضر، رسالة خطأ حمراء عند رقم بطاقة خاطئ، وحالة تحميل أثناء التأكيد.</div></div>
+    </div>
+
+    <div class="grid stagger">
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 3l7 18 2-7 7-2z"/></svg></div><div class="tag">Prototype</div><h3>Prototype تفاعلي</h3><p>نربط الشاشات ببعضها بروابط وانتقالات (click → next screen) عشان المستخدم «يجرّب» التدفّق وكأنه منتج حقيقي — من غير كود. هدفه نكتشف لو الناس بتتوه فين قبل التطوير.</p><div class="ex"><span class="lbl">Example</span>على Figma Prototype نربط زر «ادفع الآن» بشاشة «تم الطلب»، ونعطي 5 مستخدمين مهمة: «اشترِ هذا المنتج بكوبون خصم».</div></div>
+      <div class="card half"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2"/></svg></div><div class="tag">When to use</div><h3>متى تستخدم كل مستوى؟</h3><p>القاعدة بسيطة: ابدأ بأقل دقة ممكنة، واصعد فقط لما تتأكد إن المستوى الحالي «صحّ». كل ما الدقة أعلى، كل ما تغيير الفكرة أغلى.</p><div class="ex"><span class="lbl">Example</span>فكرة جديدة غامضة → Lo-fi. ترتيب الشاشة محل خلاف → Mid-fi. تدفّق نريد اختباره مع مستخدمين → Prototype. جاهز للتسليم → Hi-fi.</div></div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>المستوى</th><th>الأداة</th><th>الوقت</th><th>يجاوب على سؤال</th><th>متى تستخدمه</th></tr></thead>
+        <tbody>
+          <tr><td>Lo-fi</td><td>ورق / قلم / Whiteboard</td><td>دقائق</td><td>هل الفكرة والتدفّق منطقيان؟</td><td>أول الأفكار، brainstorming سريع</td></tr>
+          <tr><td>Mid-fi</td><td>Figma (رمادي)</td><td>ساعات</td><td>هل الترتيب والـ hierarchy واضحان؟</td><td>قبل ما تلمس الهوية البصرية</td></tr>
+          <tr><td>Prototype</td><td>Figma Prototype / Maze</td><td>ساعات → يوم</td><td>أين يتعثّر المستخدم فعليًا؟</td><td>قبل التطوير، لاختبار التدفّق</td></tr>
+          <tr><td>Hi-fi</td><td>Figma (هوية كاملة)</td><td>أيام</td><td>هل المنتج جاهز ومُتقن للتسليم؟</td><td>بعد ما اتأكدت إن التدفّق صحّ</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><h3>ارسم Lo-fi بسرعة</h3><p>على ورقة، حدّد العناصر الأساسية لكل شاشة وترتيبها. لو لقيت الفكرة مش منطقية هنا، يبقى وفّرت أيام تصميم كاملة.</p></div>
+      <div class="step"><h3>انقل لـ Mid-fi على Figma</h3><p>spacing وgrid ونصوص حقيقية بالرمادي. احسم تسلسل الأزرار والحقول قبل أي لون أو خط.</p></div>
+      <div class="step"><h3>اربط prototype واختبر مبكرًا</h3><p>اربط الشاشات وأعطِ 3–5 مستخدمين مهمة محدّدة. راقب أين يترددون أو يضغطون غلط، وعدّل قبل ما تكمّل UI.</p></div>
+      <div class="step"><h3>ارفع لـ Hi-fi بعد التأكد</h3><p>بعد ما التدفّق ثبت، طبّق الهوية والـ states كاملة. دلوقتي بس التصميم النهائي يستاهل وقتك.</p></div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 01 · Wireframe Testing</div>
+      <div class="cs-name">اختبار شاشة الدفع — متجر إلكتروني للأجهزة المنزلية</div>
+      <div class="cs-sub">Mid-fi wireframe + prototype · 4 أيام · قبل أي تصميم UI كامل</div>
+      <div class="cs-body">
+        <div>
+          <h4>التحدّي</h4>
+          <p>العميل أصرّ على شاشة دفع «من خطوة واحدة» فيها 11 حقلًا في صفحة طويلة. الفريق شكّ إنها هتربك المستخدم، لكن مفيش دليل بعد.</p>
+        </div>
+        <div>
+          <h4>المقاربة</h4>
+          <p>بدل ما نصمّم UI كامل، عملنا نسختين Mid-fi على Figma: نسخة الخطوة الواحدة، ونسخة مقسّمة لـ 3 خطوات. ربطناهم prototype واختبرناهم مع 6 مستخدمين بمهمة شراء واحدة.</p>
+        </div>
+        <div>
+          <h4>النتيجة</h4>
+          <p>4 من 6 تاهوا في النسخة الطويلة وسألوا «خلصت ولا لسه؟». النسخة المقسّمة عدّاها الجميع بسلاسة. أخدنا القرار في 4 أيام بتكلفة شبه صفر، قبل ما نبدأ Hi-fi.</p>
+        </div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>4D</strong><span>قرار بدل أسبوعين UI</span></div>
+        <div class="cs-metric"><strong>-64%</strong><span>أخطاء التدفّق في الاختبار</span></div>
+        <div class="cs-metric"><strong>6</strong><span>مستخدمين اختبروا قبل التطوير</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Mid-fi</span><span class="cs-tag">Figma Prototype</span><span class="cs-tag">Usability Test</span><span class="cs-tag">Checkout UX</span></div>
+      <div class="en" style="margin-top:14px">Checkout test for a home-appliances store. Instead of building full UI, two Mid-fi wireframes (single-step vs 3-step) were prototyped and tested with 6 users. The split flow won — decision made in 4 days at near-zero cost, before any Hi-fi work.</div>
+    </div>
+
+    <div class="note reveal">اختبر مبكرًا و رخيصًا: كل مشكلة تكتشفها على wireframe بتوفّر عليك أضعاف وقتها لو اكتشفتها في Hi-fi أو بعد التطوير. الـ wireframe المتروكي مش فشل — هو أرخص نسخة من «تعلّمنا».
+    <div class="en">Test early and cheap: every problem caught on a wireframe saves you many times the cost of finding it in Hi-fi or after development. A discarded wireframe isn't failure — it's the cheapest version of "we learned something."</div></div>
+
+    <div class="pilllist reveal"><span class="p">Figma</span><span class="p">Figma Prototype</span><span class="p">Maze</span><span class="p">Whiteboard / Paper</span><span class="p">Balsamiq</span></div>
+  </section>
+
+<section id="ux-principles">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 06 · Visual Laws</div>
+    <h2>6) مبادئ التصميم البصري</h2>
+    <p class="section-intro">قبل ما نتكلم عن الألوان والخطوط، فيه قوانين بصرية بتتحكم في إزاي عين المستخدم بتتحرك على الشاشة وإيه اللي بتشوفه الأول. لما تتقن المبادئ الستة دي، أي تصميم في إيدك هيبقى أوضح وأهدأ — من غير ما تضيف أي عنصر جديد.</p>
+    <div class="en">Six visual laws decide what the eye sees first and how it travels across the screen. Master them and any layout becomes clearer — without adding a single new element.</div></div>
+
+    <div class="grid stagger">
+      <div class="card third">
+        <div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div>
+        <div class="tag">Hierarchy</div>
+        <h3>التسلسل البصري</h3>
+        <p>رتّب العناصر حسب أهميتها، عشان العين تعرف تبدأ منين وتروح فين. الحجم، الوزن، اللون، والمساحة هي أدواتك لتقول: «اقرأني الأول».</p>
+        <div class="ex"><span class="lbl">Example</span>في شاشة فاتورة: المبلغ المطلوب 320 ريال يظهر بخط كبير وغامق، ورقم الفاتورة وتاريخها بخط رمادي صغير تحته — فالعين تمسك المبلغ في أقل من ثانية.</div>
+      </div>
+
+      <div class="card third">
+        <div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div>
+        <div class="tag">Contrast</div>
+        <h3>التباين</h3>
+        <p>الفرق الواضح بين العناصر (لون فاتح/غامق، حجم كبير/صغير) هو اللي بيخلي المهم يطلع برّه ويلفت الانتباه. تباين ضعيف = كل حاجة بتغرق في بعضها.</p>
+        <div class="ex"><span class="lbl">Example</span>زر «أكمل الدفع» أخضر صريح على خلفية بيضاء، بينما «إلغاء» مجرد نص رمادي بدون خلفية — التباين وحده يوجّه الإصبع للزر الصح.</div>
+      </div>
+
+      <div class="card third">
+        <div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg></div>
+        <div class="tag">Alignment</div>
+        <h3>المحاذاة</h3>
+        <p>خلّي العناصر تتبع خطوط وهمية مشتركة (يمين، يسار، أو منتصف). المحاذاة المنظمة بتدّي إحساس بالنظافة والاحتراف، وبتقلل العشوائية اللي بتتعب العين.</p>
+        <div class="ex"><span class="lbl">Example</span>في فورم تسجيل: كل الـ labels والحقول متحاذية على نفس الخط من اليمين (RTL)، فالعين تنزل عمودي مستقيم بدل ما تتنطط يمين وشمال بين كل سطر.</div>
+      </div>
+
+      <div class="card third">
+        <div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <div class="tag">Proximity</div>
+        <h3>التقارب</h3>
+        <p>العناصر القريبة من بعض العقل بيقرأها كمجموعة واحدة. قرّب اللي مترابط وبعّد اللي مختلف — المسافة وحدها تكفي لتقول «دول مع بعض».</p>
+        <div class="ex"><span class="lbl">Example</span>في كارت منتج: الاسم والسعر والتقييم متلازقين كمجموعة، وبينهم وبين زر «أضف للسلة» مسافة أكبر — فالمستخدم يفهم إنهم معلومة واحدة والزر فعل منفصل.</div>
+      </div>
+
+      <div class="card third">
+        <div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div>
+        <div class="tag">Repetition</div>
+        <h3>التكرار</h3>
+        <p>كرّر نفس الأنماط (ألوان، أحجام، شكل الأزرار، المسافات) عبر الشاشات. التكرار بيبني اتساق وإحساس بالألفة، فالمستخدم يتعلم الواجهة مرة وحدة ويطبّقها في كل مكان.</p>
+        <div class="ex"><span class="lbl">Example</span>كل الأزرار الرئيسية في التطبيق بنفس الأخضر، نفس الـ radius، ونفس الـ padding — فلما يشوف زر جديد لأول مرة يعرف على طول إنه «الفعل الأساسي» بدون ما يفكر.</div>
+      </div>
+
+      <div class="card third">
+        <div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg></div>
+        <div class="tag">Gestalt</div>
+        <h3>مبادئ Gestalt</h3>
+        <p>العقل بيلملم العناصر في أشكال وأنماط: التشابه، الإحاطة المشتركة، والاستمرارية. استغلها عشان تجمّع وتفصل من غير خطوط فاصلة كتير ولا حدود تقيلة.</p>
+        <div class="ex"><span class="lbl">Example</span>في dashboard، 4 أرقام إحصائية بنفس الستايل (Similarity) تتقرأ كصف واحد متجانس، وكل بطاقة محاطة بخلفية رمادية خفيفة (Common Region) تفصلها عن جارتها بدون أي بوردر.</div>
+      </div>
+    </div>
+
+    <div class="note reveal">المبادئ الستة دي مش زخرفة — كلها بتخدم هدف واحد: <strong>الوضوح</strong>. كل ما العين تلاقي تسلسل وتباين ومحاذاة ومجموعات منطقية، كل ما المستخدم يفهم الشاشة أسرع ويتعب أقل. لو تصميم وقع، 90% من الوقت السبب خرق واحد من دول.
+      <div class="en">These six laws aren't decoration — they all serve one goal: clarity. The more the eye finds hierarchy, contrast, alignment, and logical grouping, the faster users understand the screen and the less they tire. When a layout feels "off," it's usually one of these being broken.</div>
+    </div>
+  </section>
+
+<section id="ux-color">
+  <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 07 · Color</div>
+  <h2>7) اللون (Color)</h2>
+  <p class="section-intro">اللون ليس زينة فحسب، بل لغة تُشعِر المستخدم بالأمان أو الخطر، وتقوده عبر الواجهة، وتبني هوية المنتج. في هذا الفصل نتعلّم نظرية اللون من أساسها: عجلة الألوان، قاعدة 60-30-10 للتوازن، الألوان الدلالية (نجاح/خطأ/تحذير)، ثم التباين والإتاحة وقاعدة 4.5:1 التي تجعل النص مقروءًا للجميع.</p></div>
+
+  <div class="grid stagger">
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M16 8l-2 6-6 2 2-6z"/></svg></div><div class="tag">Color Wheel</div><h3>عجلة الألوان</h3><p>أداة تنظّم الألوان حول دائرة وتساعدك على بناء تناغم: <strong>متشابهة (Analogous)</strong> متجاورة فهادئة، <strong>متكاملة (Complementary)</strong> متقابلة فحادة وعالية الجذب، و<strong>ثلاثية (Triadic)</strong> متباعدة بالتساوي فمتوازنة وحيوية.</p><div class="ex"><span class="lbl">Example</span>لزرّ "احجز موعدًا" نختار لونًا متكاملًا (مثل البرتقالي مقابل الأزرق الطبي) ليبرز فوق الخلفية الزرقاء الهادئة فيلفت العين فورًا.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><div class="tag">60-30-10</div><h3>قاعدة 60-30-10</h3><p>وصفة بسيطة للتوازن: <strong>60%</strong> لون أساسي/محايد يملأ المساحات، <strong>30%</strong> لون ثانوي للعناصر الداعمة كالأقسام والأشرطة، و<strong>10%</strong> لون مميّز (Accent) يُحجَز للأفعال المهمة فقط. هذه النِّسَب تمنع الفوضى وتُبقي العين مرتاحة.</p><div class="ex"><span class="lbl">Example</span>شاشة لوحة معلومات: 60% رمادي فاتح للخلفية، 30% أزرق طبي للبطاقات والرأس، 10% أخضر فقط لزرّ "تأكيد الحجز".</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div><div class="tag">Semantic</div><h3>الألوان الدلالية</h3><p>ألوان لها معنى متّفق عليه يختصر القراءة: <strong>الأخضر = نجاح</strong>، <strong>الأحمر = خطأ/تدمير</strong>، <strong>الأصفر/الكهرماني = تحذير</strong>، <strong>الأزرق = معلومة</strong>. ثبّتها في نظام تصميمك كـ Tokens واستخدمها بانتساق عبر كل الشاشات.</p><div class="ex"><span class="lbl">Example</span>في نموذج تسجيل: شريط أخضر "تم حفظ بياناتك"، رسالة حمراء "البريد غير صحيح"، تنبيه كهرماني "كلمة المرور ضعيفة".</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg></div><div class="tag">Contrast</div><h3>التباين والإتاحة 4.5:1</h3><p>التباين هو الفرق في السطوع بين النص وخلفيته. توصي معايير <strong>WCAG AA</strong> بنسبة <strong>4.5:1</strong> على الأقل للنص العادي و<strong>3:1</strong> للنص الكبير (18pt+). النص المنخفض التباين يُتعب القارئ ويستبعد ضعاف البصر تمامًا.</p><div class="ex"><span class="lbl">Example</span>نص رمادي فاتح (#9AA0A6) على أبيض يعطي 2.8:1 ويفشل؛ تغميقه إلى (#5F6368) يرفعه إلى 4.6:1 فينجح بلا تغيير في الهوية.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div><div class="tag">Tints &amp; Shades</div><h3>الدرجات والظلال</h3><p>من اللون الواحد نشتق سُلّمًا من الدرجات (Tints بإضافة الأبيض) والظلال (Shades بإضافة الأسود) — مثلاً 50 إلى 900. هذا يمنحك ثراءً بصريًا منضبطًا للحالات: عادي، تمرير الماوس (Hover)، نشط، ومُعطّل.</p><div class="ex"><span class="lbl">Example</span>زرّ أخضر أساسي 500، يصبح 600 عند Hover، و700 عند الضغط، و200 عند التعطيل — كلها مشتقة من لون واحد.</div></div>
+
+    <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/></svg></div><div class="tag">Culture</div><h3>دلالة اللون والثقافة</h3><p>معاني الألوان تختلف بين الثقافات والسياقات. في الخليج يرتبط الأخضر بالطمأنينة والصحة، بينما قد يعني الأحمر الخطر أو يُستخدم للتأكيد. اختبر دلالات الألوان مع جمهورك الفعلي قبل اعتمادها.</p><div class="ex"><span class="lbl">Example</span>تطبيق صيدلية سعودي: استخدمنا الأخضر للهوية لارتباطه بالشفاء، وحجزنا الأحمر للتحذيرات الدوائية الحرجة فقط.</div></div>
+  </div>
+
+  <div class="table-wrap reveal"><table><thead><tr><th>الدور (Role)</th><th>اللون المقترح</th><th>الاستخدام</th><th>التباين على أبيض</th></tr></thead><tbody>
+    <tr><td>Success / نجاح</td><td>#2E7D32</td><td>تأكيد الحجز، اكتمال الإجراء</td><td>5.1:1 ✓</td></tr>
+    <tr><td>Error / خطأ</td><td>#C62828</td><td>فشل، حقل غير صالح، حذف</td><td>5.9:1 ✓</td></tr>
+    <tr><td>Warning / تحذير</td><td>#B26A00</td><td>انتباه، إجراء قابل للتراجع</td><td>4.6:1 ✓</td></tr>
+    <tr><td>Info / معلومة</td><td>#1565C0</td><td>نصائح، حالة محايدة</td><td>5.4:1 ✓</td></tr>
+    <tr><td>Neutral / محايد</td><td>#5F6368</td><td>نص ثانوي، حدود</td><td>4.6:1 ✓</td></tr>
+  </tbody></table></div>
+
+  <div class="steps reveal">
+    <div class="step"><h3>ابدأ باللون الأساسي للهوية</h3><p>اختر لونًا واحدًا يعكس شخصية المنتج (الثقة، الحيوية، الهدوء) واشتقّ منه سُلّم الدرجات الكامل.</p></div>
+    <div class="step"><h3>أضِف لونًا مميّزًا واحدًا</h3><p>لون متكامل أو ثلاثي يُحجَز للأفعال الأهم فقط — هذا هو الـ 10% في قاعدة 60-30-10.</p></div>
+    <div class="step"><h3>ثبّت الألوان الدلالية</h3><p>عرّف نجاح/خطأ/تحذير/معلومة كـ Tokens ثابتة لا تتغيّر بتغيّر الشاشة.</p></div>
+    <div class="step"><h3>تحقّق من التباين</h3><p>مرّر كل زوج (نص/خلفية) عبر فاحص تباين وتأكّد من بلوغ 4.5:1 قبل الاعتماد.</p></div>
+  </div>
+
+  <div class="cs reveal"><div class="cs-label">Case Study 01 · Healthcare Palette</div><div class="cs-name">تطبيق "شفاء" للرعاية الصحية</div><div class="cs-sub">تطبيق حجز مواعيد وعرض نتائج تحاليل لعيادة متعددة التخصصات — جمهور واسع يشمل كبار السن</div>
+  <div class="cs-body"><div><h4>التحدّي</h4><p>كانت اللوحة الأولى تعتمد أزرقًا واحدًا لكل شيء — الأزرار والروابط والتنبيهات — فاختلطت الإجراءات الحرجة بالعادية، وشكا مستخدمون كبار السن من صعوبة قراءة النصوص الرمادية الفاتحة.</p></div><div><h4>المقاربة</h4><p>بنينا نظام ألوان منضبط: أزرق طبي هادئ (#1565C0) للهوية بنسبة 60-30، وأخضر (#2E7D32) مُميَّز للأفعال الأساسية فقط، وألوان دلالية واضحة للنتائج. غمّقنا النص الثانوي ليبلغ 4.6:1 وأضفنا أيقونة ونصًا بجانب كل لون دلالي.</p></div><div><h4>النتيجة</h4><p>أصبحت الشاشات أوضح وأهدأ، وارتفع معدل إكمال حجز الموعد، وانخفضت تذاكر الدعم المتعلقة بـ"لم أجد زر التأكيد" بشكل ملحوظ بعد إبراز اللون المميّز.</p></div></div>
+  <div class="cs-metrics"><div class="cs-metric"><strong>+27%</strong><span>إكمال حجز الموعد</span></div><div class="cs-metric"><strong>-38%</strong><span>تذاكر الدعم حول الأزرار</span></div><div class="cs-metric"><strong>4.6:1</strong><span>أدنى تباين بعد التحسين</span></div></div>
+  <div class="cs-tags"><span class="cs-tag">Color System</span><span class="cs-tag">Accessibility</span><span class="cs-tag">Healthcare</span><span class="cs-tag">WCAG AA</span></div></div>
+
+  <div class="kpis reveal"><div class="kpi"><strong><span class="count" data-to="60">0</span>%</strong><span>لون أساسي/محايد</span></div><div class="kpi"><strong><span class="count" data-to="30">0</span>%</strong><span>لون ثانوي داعم</span></div><div class="kpi"><strong><span class="count" data-to="10">0</span>%</strong><span>لون مميّز للأفعال</span></div><div class="kpi"><strong>4.5:1</strong><span>أدنى تباين للنص العادي</span></div></div>
+
+  <div class="note warn reveal">اللون وحده لا يكفي لنقل المعنى أبدًا. نحو 8% من الرجال يعانون من عمى ألوان (خاصةً تمييز الأحمر/الأخضر)، لذا أرفِق دائمًا اللون بإشارة ثانية: أيقونة، نص، أو نمط. لا تكتفِ بـ"الحقول الحمراء خطأ" — أضِف أيقونة تحذير ونصًا يشرح الخطأ.
+  <div class="en">Never use color as the only carrier of meaning. ~8% of men have color-vision deficiency (mostly red/green). Always pair color with a second cue — an icon, text label, or pattern — so the message survives even when the color isn't perceived.</div></div>
+
+  <div class="pilllist reveal"><span class="p">Figma</span><span class="p">WCAG 2.1 AA</span><span class="p">Stark</span><span class="p">Color Contrast Analyzer</span><span class="p">Material Color Tool</span><span class="p">Coolors</span><span class="p">Design Tokens</span></div>
+</section>
+
+<section id="ux-type">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 08 · Type</div>
+    <h2>8) الخطوط (Typography)</h2>
+    <p class="section-intro">الكتابة هي ٩٠٪ من أي واجهة. الطباعة الجيدة لا تُلاحَظ — يقرأ المستخدم بسلاسة و لا يشعر بالجهد. في هذا الفصل نتعلّم كيف نبني <strong>سلّمًا طباعيًا</strong> منظّمًا، و نختار اقترانًا متناغمًا للخطوط، و نضبط ارتفاع السطر و طوله ليصير النص مريحًا للعين. القاعدة الذهبية: القابلية للقراءة قبل الجمال دائمًا.</p></div>
+
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 6h14M12 6v13M9 19h6"/></svg></div><div class="tag">Type Scale</div><h3>السلّم الطباعي</h3><p>لا تختر الأحجام عشوائيًا. ابنِ سلّمًا بنسبة ثابتة (مثلًا ١.٢٥) لتنشأ هرمية واضحة بين العنوان و العنوان الفرعي و المتن.</p><div class="ex"><span class="lbl">Example</span>قاعدة 16px ونسبة 1.25: ‎16 → 20 → 25 → 31 → 39px. كل حجم له دور: 16 للمتن، 25 لعنوان القسم، 39 لعنوان الصفحة.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><div class="tag">Pairing</div><h3>اقتران الخطوط</h3><p>خطّان يكفيان: واحد للعناوين بشخصية قوية، و آخر للمتن مريح للقراءة الطويلة. التباين بينهما يخلق إيقاعًا بصريًا.</p><div class="ex"><span class="lbl">Example</span>عنوان بخط Space Grotesk (Bold, هندسي حادّ) فوق متن بخط Inter (Regular, محايد و واضح). تباين في الشخصية مع انسجام في النسب.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M3 13l9 5 9-5"/><path d="M3 8l9 5 9-5"/></svg></div><div class="tag">Line Height</div><h3>ارتفاع السطر</h3><p>المسافة بين الأسطر تمنح النص هواءً يتنفّس. ضيّقة جدًا = ازدحام و تعب، واسعة جدًا = تفكّك. القاعدة: ١.٤–١.٦ للمتن.</p><div class="ex"><span class="lbl">Example</span>متن بحجم 16px مع line-height: 1.5 ‎(24px). العناوين الكبيرة تأخذ ارتفاعًا أقل (1.1–1.2) لأنها أسطر قصيرة.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg></div><div class="tag">Line Length</div><h3>طول السطر (Measure)</h3><p>السطر الطويل جدًا يُتعب العين عند العودة لبدايته، و القصير جدًا يقطع التدفّق. المدى المثالي ٦٠–٧٥ حرفًا للسطر الواحد.</p><div class="ex"><span class="lbl">Example</span>في مقال نصّي حدّد ‎max-width: 65ch — يضمن طولًا مريحًا بصرف النظر عن عرض الشاشة، فلا يمتدّ النص بلا نهاية على الديسكتوب.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div><div class="tag">Weight</div><h3>الوزن للهرمية</h3><p>الوزن (Bold / Regular / Light) أداة سريعة لتمييز الأهمية دون تكبير الحجم. استخدمه باعتدال — كل شيء غامق يعني لا شيء مهم.</p><div class="ex"><span class="lbl">Example</span>في بطاقة منتج: اسم المنتج Semibold 600، السعر Bold 700، الوصف Regular 400. ثلاثة أوزان بنفس الحجم تكفي لبناء الهرمية.</div></div>
+
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg></div><div class="tag">Contrast</div><h3>التباين و الوضوح</h3><p>أوضح خطّ يصبح غير مقروء فوق خلفية متقاربة اللون. تأكّد من تباين كافٍ بين النص و خلفيته، خاصة في الوضع الداكن.</p><div class="ex"><span class="lbl">Example</span>نصّ رمادي ‎#8497AE فوق خلفية داكنة #0a1626 يحقق تباينًا 4.5:1 (معيار WCAG AA). أفتح من ذلك = إجهاد بصري.</div></div>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step"><h3>اختر خطّ المتن أولًا</h3><p>ابدأ بالخط الأكثر استخدامًا — المتن. اختره مريحًا للقراءة الطويلة، ثم ابنِ كل شيء حوله.</p></div>
+      <div class="step"><h3>أضِف خطّ العنوان</h3><p>اختر خطًا للعناوين يتباين في الشخصية لكن ينسجم في النسب. تجنّب خطّين متشابهين — لا فائدة منهما.</p></div>
+      <div class="step"><h3>ابنِ السلّم</h3><p>حدّد قاعدة (16px) و نسبة (1.25)، و ولّد منها أحجام العناوين. وثّقها كـ tokens قابلة لإعادة الاستخدام.</p></div>
+      <div class="step"><h3>اضبط الإيقاع</h3><p>اضبط ارتفاع السطر (1.5 للمتن) و طوله (65ch) و المسافات حول الكتل النصية حتى يتنفّس النص.</p></div>
+    </div>
+
+    <div class="ex reveal"><span class="lbl">Example · Pairing</span>اقتران عنوان/متن جاهز للنسخ: العنوان <strong>Space Grotesk 700</strong> بحجم 39px و line-height 1.15؛ المتن <strong>Inter 400</strong> بحجم 16px و line-height 1.6 و max-width 65ch. للعربية: <strong>Tajawal Bold</strong> للعنوان مع <strong>Cairo Regular</strong> للمتن — اقتران متناغم يدعم RTL بوضوح.</div>
+
+    <div class="cs reveal"><div class="cs-label">Case Study 01 · Readability First</div><div class="cs-name">إعادة تصميم مدوّنة «اقرأ»</div><div class="cs-sub">مدوّنة مقالات طويلة كانت تعاني من معدّل ارتداد مرتفع و شكاوى من صعوبة القراءة</div>
+    <div class="cs-body"><div><h4>التحدّي</h4><p>المتن بحجم 14px، أسطر تمتدّ لكامل عرض الشاشة (~120 حرفًا)، و ارتفاع سطر 1.2 ضيّق. القارئ يتعب بعد فقرتين و يغادر.</p></div><div><h4>المقاربة</h4><p>رفعنا المتن إلى 18px، قيّدنا العرض بـ 68ch، و وسّعنا ارتفاع السطر إلى 1.6. اقتران واحد: Tajawal للعناوين و Cairo للمتن، بثلاثة أوزان فقط.</p></div><div><h4>النتيجة</h4><p>ازداد متوسّط زمن القراءة و انخفض الارتداد بوضوح، دون إضافة أي محتوى جديد — مجرّد طباعة أفضل.</p></div></div>
+    <div class="cs-metrics"><div class="cs-metric"><strong>+42%</strong><span>متوسّط زمن القراءة</span></div><div class="cs-metric"><strong>-31%</strong><span>معدّل الارتداد</span></div><div class="cs-metric"><strong>68ch</strong><span>طول السطر بعد الضبط</span></div></div>
+    <div class="cs-tags"><span class="cs-tag">Type Scale</span><span class="cs-tag">Measure</span><span class="cs-tag">Line Height</span><span class="cs-tag">RTL</span></div></div>
+
+    <div class="kpis reveal"><div class="kpi"><strong><span class="count" data-to="65">0</span>ch</strong><span>طول السطر المثالي للقراءة</span></div><div class="kpi"><strong><span class="count" data-to="2">0</span></strong><span>خطّان يكفيان لأي مشروع</span></div><div class="kpi"><strong>1.<span class="count" data-to="5">0</span></strong><span>ارتفاع السطر للمتن</span></div></div>
+
+    <div class="note reveal">القابلية للقراءة قبل الجمال. الخطّ المزخرف الذي يُبهر في الـ portfolio قد يكون كارثة في فقرة من ٣٠٠ كلمة. اسأل دائمًا: «هل يستطيع المستخدم قراءة هذا بسهولة على هاتفه في الشمس؟» إن كان الجواب لا، فالجمال بلا قيمة.<div class="en">Readability beats beauty. A decorative font that wows in a portfolio can be a disaster in a 300-word paragraph. Always ask: can a real user read this comfortably on a phone in sunlight? If not, the aesthetics don't matter.</div></div>
+
+    <div class="pilllist reveal"><span class="p">Inter</span><span class="p">Space Grotesk</span><span class="p">Tajawal</span><span class="p">Cairo</span><span class="p">type-scale.com</span><span class="p">Modular Scale</span><span class="p">65ch</span></div>
+  </section>
+
+  <!-- 9) LAYOUT & SPACING -->
+  <section id="ux-layout">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 09 · Layout</div>
+    <h2>9) التخطيط و المسافات</h2>
+    <p class="section-intro">التخطيط الجيد يجعل العين تتنقّل بسلاسة. أدواتك: الشبكات (grids)، نظام مسافات منتظم (8pt)، و الفراغ الأبيض (whitespace). الفراغ ليس فراغًا — هو ما يمنح المحتوى أن يتنفّس و يُفهم.</p></div>
+    <div class="viz reveal">
+      <div class="cflow">
+        <div class="cnode"><div class="t">4</div><div class="s">tight</div></div>
+        <div class="cnode"><div class="t">8</div><div class="s">base</div></div>
+        <div class="cnode big"><div class="t">16</div><div class="s">comfortable</div></div>
+        <div class="cnode"><div class="t">24</div><div class="s">section</div></div>
+        <div class="cnode"><div class="t">32</div><div class="s">block</div></div>
+        <div class="cnode"><div class="t">48</div><div class="s">page</div></div>
+      </div>
+      <div class="cfeed-lbl">نظام مسافات 8pt — كل القيم مضاعفات 4/8 فيصبح الإيقاع منتظمًا تلقائيًا</div>
+    </div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><div class="tag">Grid</div><h3>الشبكة</h3><p>أعمدة و هوامش ثابتة تنظّم العناصر و تمنحك اتساقًا عبر الشاشات. 12 عمودًا هو المعيار الشائع للويب.</p><div class="ex"><span class="lbl">Example</span>بطاقات منتجات على شبكة 12 عمودًا: 4 بطاقات × 3 أعمدة على الديسктоп، تتحوّل لعمود واحد على الموبايل.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="8" rx="1.5"/><path d="M7 8v3M11 8v4M15 8v3M19 8v4"/></svg></div><div class="tag">Spacing</div><h3>نظام 8pt</h3><p>استخدم مضاعفات 8 (و 4 للتفاصيل) لكل الهوامش و المسافات. يلغي التخمين و يوحّد الإيقاع البصري.</p><div class="ex"><span class="lbl">Example</span>padding البطاقة 24، المسافة بين العنوان و النص 8، بين البطاقات 16 — كلها من نفس السلّم.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></div><div class="tag">Whitespace</div><h3>الفراغ الأبيض</h3><p>المسافة حول العناصر و بينها. الفراغ السخي يرفع الإحساس بالجودة و يقلّل الحِمل الإدراكي.</p><div class="ex"><span class="lbl">Example</span>صفحة هبوط بفراغ واسع حول العنوان تبدو «فاخرة»؛ نفس المحتوى مزدحمًا يبدو رخيصًا و متعبًا.</div></div>
+    </div>
+    <div class="note reveal">القاعدة: جمّع المترابط (تقارب)، و باعِد المختلف. الفراغ المنتظم أقوى من أي خط فاصل.
+      <div class="en">Group what's related, separate what isn't. Consistent spacing communicates structure better than dividers ever will.</div>
+    </div>
+  </section>
+
+  <!-- 10) COMPONENTS & DESIGN SYSTEMS -->
+  <section id="ux-systems">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 10 · Systems</div>
+    <h2>10) المكوّنات و أنظمة التصميم</h2>
+    <p class="section-intro">بدل تصميم كل شاشة من الصفر، تبني «لُبنات» قابلة لإعادة الاستخدام. نظام التصميم (Design System) = مكوّنات + قواعد + tokens، يجعل المنتج متّسقًا و الفريق أسرع.</p></div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><div class="tag">Atomic Design</div><h3>من الذرّة إلى العضو</h3><p>Atoms (زر، حقل) → Molecules (حقل بحث) → Organisms (شريط تنقّل) → Templates → Pages. تبني الكبير من الصغير.</p><div class="ex"><span class="lbl">Example</span>زر + أيقونة + نص = «بطاقة منتج» (molecule)، و صفّ منها = «قائمة منتجات» (organism).</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div><div class="tag">Tokens</div><h3>الـ Design Tokens</h3><p>متغيّرات مسمّاة للقيم (لون primary، نصف القطر، المسافة). تغيّرها في مكان واحد فيتغيّر المنتج كله.</p><div class="ex"><span class="lbl">Example</span>token «color-primary» = أخضر العلامة؛ لو تغيّرت الهوية، تعدّله مرة فتنتشر عبر كل الشاشات.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg></div><div class="tag">Consistency</div><h3>الاتساق</h3><p>نفس الزر، نفس السلوك، في كل مكان. الاتساق يبني ثقة المستخدم و يقلّل ما يحتاج تعلّمه.</p><div class="ex"><span class="lbl">Example</span>زر «حفظ» بنفس اللون و المكان في كل الشاشات → المستخدم يجده دون تفكير.</div></div>
+    </div>
+    <div class="note reveal">وثّق <strong>حالات</strong> كل مكوّن: default · hover · active · focus · disabled · loading · error. المكوّن غير الموثّق يُساء استخدامه.
+      <div class="en">Document every component's states (default, hover, active, focus, disabled, loading, error). An undocumented component will be misused.</div>
+    </div>
+  </section>
+
+  <!-- 11) INTERACTION & MOTION -->
+  <section id="ux-motion">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 11 · Motion</div>
+    <h2>11) التفاعل و الحركة</h2>
+    <p class="section-intro">الحركة الجيدة تشرح ما حدث و توجّه الانتباه — لا تتباهى. الفيدباك الفوري، و الانتقالات السلسة، و حالات العنصر الواضحة، هي ما يجعل الواجهة تبدو «حيّة» و موثوقة.</p></div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 3l7 18 2-7 7-2z"/></svg></div><div class="tag">Micro-interactions</div><h3>التفاعلات الدقيقة</h3><p>استجابة صغيرة لفعل صغير: قلب ينبض عند الإعجاب، زر يهتزّ عند الخطأ. تصنع البهجة و الوضوح.</p><div class="ex"><span class="lbl">Example</span>أيقونة «أضِف للسلة» تتحوّل لعلامة ✓ للحظة بعد الضغط → تأكيد فوري دون رسالة.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M9 11l3 3 5-6"/><path d="M21 12a9 9 0 1 1-6.2-8.5"/></svg></div><div class="tag">Feedback &amp; States</div><h3>التغذية الراجعة و الحالات</h3><p>كل فعل يحتاج ردًّا مرئيًا خلال 100ms. وفّر حالات: تحميل، فارغ، خطأ، نجاح — لا تترك المستخدم في الفراغ.</p><div class="ex"><span class="lbl">Example</span>زر «إرسال» يصبح spinner أثناء الحفظ ثم ✓ — المستخدم يعرف أن النظام يعمل.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2"/></svg></div><div class="tag">Timing</div><h3>التوقيت و الـ Easing</h3><p>150–300ms للتفاعلات الصغيرة، ease-out للدخول. حرّك transform و opacity فقط (أداء سلس)، و احترم reduced-motion.</p><div class="ex"><span class="lbl">Example</span>قائمة منسدلة تنزلق ease-out في 200ms أنعم بكثير من ظهور مفاجئ بـ 0ms.</div></div>
+    </div>
+    <div class="note reveal">قاعدة ذهبية: كل حركة يجب أن تحمل <strong>معنى</strong> (سبب → نتيجة). الحركة الزخرفية تشتّت و تتعب.
+      <div class="en">Every animation must express cause and effect. Decorative-only motion distracts and fatigues — and always honor prefers-reduced-motion.</div>
+    </div>
+  </section>
+
+  <!-- 12) ACCESSIBILITY -->
+  <section id="ux-a11y">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 12 · Accessibility</div>
+    <h2>12) إتاحة الوصول (Accessibility)</h2>
+    <p class="section-intro">التصميم المتاح يخدم الجميع — ذوي الإعاقة، و كل مستخدم في ظرف صعب (شمس قوية، يد مشغولة، إنترنت ضعيف). الإتاحة ليست إضافة، بل جزء من جودة التصميم.</p></div>
+    <div class="grid stagger">
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div><div class="tag">Contrast</div><h3>التباين</h3><p>نسبة تباين النص مع خلفيته ≥ 4.5:1 (و 3:1 للنص الكبير). نص رمادي فاتح على أبيض = غير مقروء.</p><div class="ex"><span class="lbl">Example</span>افحص الألوان بأداة contrast checker قبل التسليم؛ #999 على أبيض يرسب الاختبار.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h.01M11 10h.01M15 10h.01M7 14h10"/></svg></div><div class="tag">Keyboard</div><h3>لوحة المفاتيح</h3><p>كل شيء قابل للاستخدام بـ Tab/Enter، مع focus ring واضح. لا تحذف الـ outline أبدًا دون بديل.</p><div class="ex"><span class="lbl">Example</span>نموذج يُملأ و يُرسل بالكيبورد فقط، و حلقة التركيز ظاهرة على كل حقل.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M5 3l7 18 2-7 7-2z"/></svg></div><div class="tag">Targets</div><h3>أحجام اللمس</h3><p>أصغر هدف لمس 44×44px مع مسافة كافية بينها — تمنع الضغطات الخاطئة على الموبايل.</p><div class="ex"><span class="lbl">Example</span>أيقونة حذف 16px داخل منطقة لمس 44px (hit area) — تبدو صغيرة لكنها سهلة اللمس.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/></svg></div><div class="tag">Not color only</div><h3>لا تعتمد على اللون وحده</h3><p>أضِف أيقونة أو نصًّا مع اللون. 1 من 12 رجل لا يميّز الأحمر/الأخضر بسهولة.</p><div class="ex"><span class="lbl">Example</span>حالة الخطأ = لون أحمر + أيقونة ⚠ + نص «بريد غير صحيح»، لا لون أحمر فقط.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg></div><div class="tag">ARIA &amp; alt</div><h3>للنصوص و الأيقونات</h3><p>صور لها alt وصفي، و أزرار الأيقونات لها aria-label. قارئ الشاشة «يرى» بالنص لا بالشكل.</p><div class="ex"><span class="lbl">Example</span>زر أيقونة بحث: <code>aria-label="بحث"</code> — بدونها يسمع المستخدم «زر» فقط.</div></div>
+      <div class="card third"><div class="itile"><svg viewBox="0 0 24 24"><path d="M4 9a8 8 0 0 1 14-3l2 2M20 15a8 8 0 0 1-14 3l-2-2"/></svg></div><div class="tag">Motion</div><h3>احترم reduced-motion</h3><p>بعض المستخدمين تزعجهم الحركة (دوار). وفّر نسخة هادئة عند تفعيل التفضيل.</p><div class="ex"><span class="lbl">Example</span>عند <code>prefers-reduced-motion</code> تُلغى الانتقالات الكبيرة و يظهر المحتوى مباشرة.</div></div>
+    </div>
+    <div class="note danger reveal">الإتاحة ليست رفاهية — في كثير من الدول هي مطلب قانوني، و دائمًا هي علامة احترافية. صمّم للجميع.
+      <div class="en">Accessibility isn't optional — it's a legal requirement in many regions and always a mark of craft. Design for everyone.</div>
+    </div>
+  </section>
+
+  <!-- 13) HEURISTICS -->
+  <section id="ux-heuristics">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 13 · Heuristics</div>
+    <h2>13) قواعد Nielsen العشر للاستخدام</h2>
+    <p class="section-intro">عشر قواعد ذهبية يستخدمها المصمّمون لتقييم أي واجهة بسرعة (heuristic evaluation). احفظها — فهي «قائمة فحص» الجودة.</p></div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>#</th><th>القاعدة</th><th>مثال</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>وضوح حالة النظام</td><td>شريط تقدّم يقول «جارٍ الرفع 60%» بدل دوران بلا نهاية</td></tr>
+          <tr><td>2</td><td>التطابق مع العالم الواقعي</td><td>أيقونة سلة للتسوّق، و لغة المستخدم لا لغة المبرمج</td></tr>
+          <tr><td>3</td><td>تحكّم المستخدم و حريته</td><td>زر «تراجع/إلغاء» واضح بعد أي فعل</td></tr>
+          <tr><td>4</td><td>الاتساق و المعايير</td><td>زر «حفظ» بنفس الشكل و المكان في كل الشاشات</td></tr>
+          <tr><td>5</td><td>منع الأخطاء</td><td>تعطيل زر الإرسال حتى تكتمل الحقول المطلوبة</td></tr>
+          <tr><td>6</td><td>التعرّف لا التذكّر</td><td>إظهار الخيارات بدل مطالبة المستخدم بتذكّر أمر</td></tr>
+          <tr><td>7</td><td>المرونة و الكفاءة</td><td>اختصارات للخبراء + مسار بسيط للمبتدئين</td></tr>
+          <tr><td>8</td><td>تصميم جمالي بسيط</td><td>إزالة كل ما لا يخدم المهمة — لا حشو</td></tr>
+          <tr><td>9</td><td>مساعدة المستخدم على تصحيح الأخطاء</td><td>رسالة خطأ تشرح السبب و الحل، لا «خطأ 404» فقط</td></tr>
+          <tr><td>10</td><td>المساعدة و التوثيق</td><td>بحث سهل في المساعدة و نصائح في السياق</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">طبّقها كقائمة فحص: امشِ على واجهتك و اسأل عن كل قاعدة «هل أحققها؟». تكتشف نصف المشاكل في دقائق.
+      <div class="en">Use them as a checklist: walk your UI and ask each rule "do I satisfy this?" — you'll catch half your issues in minutes.</div>
+    </div>
+  </section>
+
+  <!-- 14) TOOLS -->
+  <section id="ux-tools">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 14 · Toolkit</div>
+    <h2>14) أدوات المصمّم</h2>
+    <p class="section-intro">الأداة تخدم العملية لا العكس. ابدأ بأداة واحدة (Figma غالبًا) و أتقنها قبل أن تتنقّل. هذه خريطة الفئات.</p></div>
+    <div class="toolcat reveal">
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></div><h4>التصميم</h4><p>تصميم الواجهات و الأنظمة، تعاون لحظي في المتصفح.</p><div class="names"><span>Figma</span><span>Sketch</span><span>Penpot</span></div></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/></svg></div><h4>التعاون و العصف</h4><p>سبّورات بيضاء، خرائط رحلة، جلسات أفكار.</p><div class="names"><span>FigJam</span><span>Miro</span></div></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M5 3l7 18 2-7 7-2z"/></svg></div><h4>النماذج التفاعلية</h4><p>تحويل التصميم لتجربة قابلة للنقر و الاختبار.</p><div class="names"><span>Figma</span><span>Framer</span><span>ProtoPie</span></div></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg></div><h4>اختبار المستخدم</h4><p>اختبارات قابلية الاستخدام و heatmaps و مقاييس.</p><div class="names"><span>Maze</span><span>Useberry</span><span>Hotjar</span></div></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 4v16"/></svg></div><h4>الأيقونات و الأصول</h4><p>أيقونات و صور و رسوم متّسقة و مجانية.</p><div class="names"><span>Lucide</span><span>Iconify</span><span>unDraw</span></div></div>
+      <div class="tc"><div class="tc-ic"><svg viewBox="0 0 24 24"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11z"/></svg></div><h4>الألوان و الخطوط</h4><p>لوحات ألوان، تباين، و اقتران خطوط.</p><div class="names"><span>Coolors</span><span>Realtime Colors</span><span>Fontpair</span></div></div>
+    </div>
+    <div class="pilllist reveal"><span class="p">ابدأ بـ Figma</span><span class="p">أتقن أداة قبل التنقّل</span><span class="p">الأداة وسيلة لا غاية</span></div>
+    <div class="note reveal">لا تطارد كل أداة جديدة. إتقان Figma + فهم المبادئ يكفيك 90% من العمل. الباقي تتعلّمه عند الحاجة.
+      <div class="en">Don't chase every new tool. Mastering Figma plus the principles covers 90% of the work; learn the rest when you actually need it.</div>
+    </div>
+  </section>
+
+  <!-- 15) CASE STUDIES -->
+  <section id="ux-cases">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 15 · Success Stories</div>
+    <h2>15) قصص نجاح (Case Studies)</h2>
+    <p class="section-intro">النظرية تُفهم بالأمثلة. هذه ثلاث قصص واقعية يظهر فيها أثر قرارات التصميم على أرقام حقيقية.</p></div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 01 · Checkout</div>
+      <div class="cs-name">إعادة تصميم صفحة الدفع</div>
+      <div class="cs-sub">متجر إلكتروني يعاني من هجر مرتفع للسلة</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>68% من المستخدمين يتركون السلة عند الدفع — خطوات كثيرة و حقول غامضة و إجبار على إنشاء حساب.</p></div>
+        <div><h4>المقاربة</h4><p>دمج الخطوات في صفحة واحدة، دفع كضيف، شريط تقدّم واضح، و تحقّق فوري من الحقول.</p></div>
+        <div><h4>النتيجة</h4><p>مسار أقصر و أوضح رفع إتمام الشراء بشكل ملموس و قلّل تذاكر الدعم.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>-34%</strong><span>هجر السلة</span></div>
+        <div class="cs-metric"><strong>+28%</strong><span>إتمام الشراء</span></div>
+        <div class="cs-metric"><strong>3→1</strong><span>خطوات الدفع</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Flow</span><span class="cs-tag">Forms</span><span class="cs-tag">Guest checkout</span></div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 02 · Onboarding</div>
+      <div class="cs-name">تبسيط تجربة أول استخدام</div>
+      <div class="cs-sub">تطبيق SaaS بمعدّل تفعيل منخفض</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>المستخدم الجديد يواجه شاشة فارغة معقّدة فيغادر قبل أن يصل لقيمة المنتج.</p></div>
+        <div><h4>المقاربة</h4><p>onboarding من 3 خطوات، حالة فارغة تعليمية، و «إنجاز سريع» في أول دقيقة.</p></div>
+        <div><h4>النتيجة</h4><p>وصل المستخدمون لـ «لحظة القيمة» أسرع فارتفع التفعيل و البقاء.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>+41%</strong><span>التفعيل</span></div>
+        <div class="cs-metric"><strong>+19%</strong><span>البقاء (W1)</span></div>
+        <div class="cs-metric"><strong>-50%</strong><span>زمن أول قيمة</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">Onboarding</span><span class="cs-tag">Empty states</span><span class="cs-tag">Activation</span></div>
+    </div>
+
+    <div class="cs reveal">
+      <div class="cs-label">Case Study 03 · Accessibility</div>
+      <div class="cs-name">تحسين الإتاحة وسّع القاعدة</div>
+      <div class="cs-sub">منصّة محتوى تتجاهل معايير الوصول</div>
+      <div class="cs-body">
+        <div><h4>التحدّي</h4><p>تباين ضعيف، لا تنقّل بالكيبورد، و صور بلا alt — استبعاد شريحة كبيرة و مخاطر قانونية.</p></div>
+        <div><h4>المقاربة</h4><p>رفع التباين لـ AA، دعم كامل للكيبورد و قارئ الشاشة، و نصوص بديلة لكل وسائط.</p></div>
+        <div><h4>النتيجة</h4><p>تجربة أفضل للجميع، تحسّن SEO، و وصول لمستخدمين جدد كانوا مستبعَدين.</p></div>
+      </div>
+      <div class="cs-metrics">
+        <div class="cs-metric"><strong>AA</strong><span>توافق WCAG</span></div>
+        <div class="cs-metric"><strong>+15%</strong><span>قاعدة المستخدمين</span></div>
+        <div class="cs-metric"><strong>100%</strong><span>تنقّل بالكيبورد</span></div>
+      </div>
+      <div class="cs-tags"><span class="cs-tag">A11y</span><span class="cs-tag">WCAG</span><span class="cs-tag">Inclusive</span></div>
+    </div>
+
+    <div class="note reveal">الدرس المشترك: قرار تصميم صغير (خطوة أقل، تباين أعلى) قد يحرّك أرقامًا كبيرة. <strong>قِس دائمًا أثر تصميمك.</strong>
+      <div class="en">Common thread: one small design decision (fewer steps, more contrast) can move big numbers. Always measure the impact of your design.</div>
+    </div>
+  </section>
+
+  <!-- 16) LEARNING ROADMAP -->
+  <section id="ux-roadmap">
+    <div class="reveal"><div class="eyebrow"><span class="dot"></span>Chapter 16 · 0 → Hero</div>
+    <h2>16) خريطة التعلّم: من الصفر إلى الاحتراف</h2>
+    <p class="section-intro">رحلة ممتعة في أربع محطات. لا تقفز — كل محطة تبني التي بعدها. و تذكّر القاعدة الذهبية: تعلّم بالبناء.</p></div>
+    <div class="kpis reveal">
+      <div class="kpi"><strong><span class="count" data-to="4">0</span></strong><span>محطات</span></div>
+      <div class="kpi"><strong><span class="count" data-to="16">0</span></strong><span>فصلًا في الرحلة</span></div>
+      <div class="kpi"><strong><span class="count" data-to="10">0</span></strong><span>قواعد استخدام</span></div>
+      <div class="kpi"><strong><span class="count" data-to="100">0</span><u>%</u></strong><span>عملي بالتطبيق</span></div>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead><tr><th>المحطة</th><th>التركيز</th><th>المهارات</th><th>المخرج</th></tr></thead>
+        <tbody>
+          <tr><td>1 · الأساسيات</td><td>الفهم</td><td>UX/UI، المبادئ، اللون، الخط، التخطيط</td><td>تنقد أي واجهة بوعي</td></tr>
+          <tr><td>2 · الأدوات و التطبيق</td><td>التنفيذ</td><td>Figma، wireframes، prototypes، نظام تصميم</td><td>تصمّم شاشات كاملة</td></tr>
+          <tr><td>3 · مشاريع و Portfolio</td><td>الإثبات</td><td>أبحاث، case studies، عرض القرارات</td><td>portfolio يحكي قصصًا</td></tr>
+          <tr><td>4 · التخصّص</td><td>التعمّق</td><td>Product Design · UX Research · Design Systems</td><td>خبير في مسارك</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note reveal">أفضل مشروع تبدأ به: <strong>أعِد تصميم تطبيق تحبّه</strong>. اكتب المشكلة، ابحث، صمّم، و وثّق قراراتك — هذا وحده portfolio.
+      <div class="en">Best first project: redesign an app you love. State the problem, research, design, and document your decisions — that alone is a portfolio piece.</div>
+    </div>
+  </section>
+
+  <div class="footer">UI / UX Studies · a learning journey companion · internal bilingual handout.</div>
+
+  </main>
 </div>
 
 <script>
@@ -861,9 +2411,25 @@ const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ 
 document.querySelectorAll(".reveal,.stagger").forEach(el=>io.observe(el));
 
 /* scrollspy */
-const links=[...document.querySelectorAll(".links a")];
-const sio=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting) links.forEach(a=>a.classList.toggle("active", a.getAttribute("href")==="#"+e.target.id)); }),{rootMargin:"-45% 0px -50% 0px"});
-document.querySelectorAll("section[id]").forEach(s=>{ if(links.some(a=>a.getAttribute("href")==="#"+s.id)) sio.observe(s); });
+const links=[...document.querySelectorAll(".links a[href*='#']")];
+const hashOf=a=>{ const h=a.getAttribute("href"), i=h.indexOf("#"); return i>=0?h.slice(i+1):null; };
+const sio=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting) links.forEach(a=>a.classList.toggle("active", hashOf(a)===e.target.id)); }),{rootMargin:"-45% 0px -50% 0px"});
+document.querySelectorAll("section[id]").forEach(s=>{ if(links.some(a=>hashOf(a)===s.id)) sio.observe(s); });
+
+/* single-file page routing (Roadmap / AI Guide) */
+const pages=[...document.querySelectorAll(".page")], groups=[...document.querySelectorAll(".navgroup")];
+function showPage(name){ pages.forEach(p=>p.classList.toggle("active",p.dataset.page===name)); groups.forEach(g=>g.classList.toggle("active",g.dataset.page===name)); }
+function pageOf(id){ const el=id&&document.getElementById(id); return el?el.closest(".page").dataset.page:null; }
+function route(hash, smooth){
+  const id=(hash||"").replace(/^#/,""); const page=pageOf(id)||"roadmap"; showPage(page);
+  const el=id&&document.getElementById(id);
+  requestAnimationFrame(()=>{ if(el && id!=="top" && id!=="ai-top"){ el.scrollIntoView({behavior:smooth?"smooth":"auto",block:"start"}); } else { scrollTo({top:0,behavior:smooth?"smooth":"auto"}); } });
+}
+document.querySelectorAll('.links a[href^="#"], a.brand[href^="#"]').forEach(a=>{
+  a.addEventListener("click", e=>{ const h=a.getAttribute("href"); if(h&&h[0]==="#"){ e.preventDefault(); if(location.hash!==h) history.pushState(null,"",h); route(h,true); } });
+});
+addEventListener("hashchange", ()=>route(location.hash,true));
+route(location.hash||"#top", false);
 
 /* count-up KPIs */
 function countUp(el){ const to=parseFloat(el.dataset.to), dur=1400; let t0;
@@ -897,6 +2463,18 @@ if(stars && !RM){ const ctx=stars.getContext("2d"); let w,h,pts;
     for(const p of pts){ p.y-=p.s; if(p.y<0)p.y=h; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fillStyle="rgba(180,205,140,"+p.a+")"; ctx.fill(); }
     requestAnimationFrame(draw); })();
 } else if(stars){ stars.style.display="none"; }
+
+/* welcome splash */
+const splash=document.getElementById("splash");
+if(splash){
+  const hide=()=>splash.classList.add("gone");
+  const dur=RM?500:2600;
+  const timer=setTimeout(hide,dur);
+  const skip=document.getElementById("splashSkip");
+  if(skip) skip.addEventListener("click",()=>{clearTimeout(timer);hide();});
+  splash.addEventListener("click",e=>{ if(e.target===splash){clearTimeout(timer);hide();} });
+  setTimeout(()=>{ try{splash.remove();}catch(_){} }, dur+900);
+}
 })();
 </script>
 </body>
