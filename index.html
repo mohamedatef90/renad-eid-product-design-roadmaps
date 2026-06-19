@@ -2476,6 +2476,981 @@ if(splash){
   setTimeout(()=>{ try{splash.remove();}catch(_){} }, dur+900);
 }
 })();
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ROADMAP COPILOT CHATBOT
+   ═══════════════════════════════════════════════════════════════════════ */
+(()=>{
+"use strict";
+
+// ─────────────────────────────────────────────────────────────────────────
+// 1) LOCAL RETRIEVAL ENGINE
+// ─────────────────────────────────────────────────────────────────────────
+let knowledgeDB = null;
+let sourcesDB = null;
+
+async function loadKnowledge() {
+  if (knowledgeDB) return knowledgeDB;
+  try {
+    const res = await fetch("data/knowledge.json");
+    knowledgeDB = await res.json();
+    return knowledgeDB;
+  } catch (err) {
+    console.warn("Knowledge DB unavailable:", err);
+    return null;
+  }
+}
+
+async function loadSources() {
+  if (sourcesDB) return sourcesDB;
+  try {
+    const res = await fetch("data/sources.json");
+    sourcesDB = await res.json();
+    return sourcesDB;
+  } catch (err) {
+    console.warn("Sources DB unavailable:", err);
+    return null;
+  }
+}
+
+function simpleTokenize(text) {
+  return text.toLowerCase()
+    .replace(/[^\u0600-\u06FFa-z0-9\s]/gi, " ")
+    .split(/\s+/)
+        // Keep short product terms like UI, UX, IA, AI; drop one-letter noise only.
+        .filter(t => t.length > 1);
+}
+
+function calculateRelevance(query, section) {
+  const queryTokens = simpleTokenize(query);
+  const sectionText = [
+    section.title_ar || "",
+    section.title_en || "",
+    section.content || "",
+    (section.keywords || []).join(" "),
+    (section.tags || []).join(" ")
+  ].join(" ");
+  const sectionTokens = simpleTokenize(sectionText);
+
+  let score = 0;
+  queryTokens.forEach(qt => {
+    sectionTokens.forEach(st => {
+      if (st.includes(qt) || qt.includes(st)) score += 1;
+    });
+  });
+
+  // Boost exact phrase matches
+  const lowerSection = sectionText.toLowerCase();
+  const lowerQuery = query.toLowerCase();
+  if (lowerSection.includes(lowerQuery)) score += 10;
+
+  return score;
+}
+
+async function localRetrieval(query, mode = "ask") {
+  const kb = await loadKnowledge();
+  const src = await loadSources();
+
+  let results = [];
+
+  // Search knowledge base
+  if (kb && kb.sections) {
+    const scored = kb.sections.map(s => ({
+      ...s,
+      score: calculateRelevance(query, s),
+      type: "section"
+    }));
+    results.push(...scored.filter(s => s.score > 0).sort((a,b) => b.score - a.score).slice(0, 5));
+  }
+
+  // For sources mode, also search external sources
+  if (mode === "sources" && src && src.sources) {
+    const scoredSrc = src.sources.map(s => ({
+      ...s,
+      score: calculateRelevance(query, {
+        title_en: s.name,
+        content: s.description,
+        keywords: s.topics || [],
+        tags: [s.category]
+      }),
+      type: "source"
+    }));
+    results.push(...scoredSrc.filter(s => s.score > 0).sort((a,b) => b.score - a.score).slice(0, 3));
+  }
+
+  return results.sort((a,b) => b.score - a.score).slice(0, 6);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 2) AI BACKEND INTEGRATION
+// ─────────────────────────────────────────────────────────────────────────
+async function callBackend(query, mode, context) {
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query, mode, context })
+    });
+
+    if (!res.ok) throw new Error("Backend unavailable");
+
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.warn("Backend call failed, using local fallback:", err);
+    return null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 3) ANSWER GENERATION
+// ─────────────────────────────────────────────────────────────────────────
+async function generateAnswer(query, mode = "ask") {
+  // Try backend first
+  const backendResult = await callBackend(query, mode, { page: getCurrentPage() });
+
+  if (backendResult && backendResult.answer) {
+    return backendResult;
+  }
+
+  // Fallback to local retrieval
+  const chunks = await localRetrieval(query, mode);
+
+  if (chunks.length === 0) {
+    return {
+      answer: mode === "sources"
+        ? "لم أجد مصادر خارجية مرتبطة بهذا السؤال. جرّب سؤالًا آخر أو استخدم وضع 'اسأل' للبحث في المحتوى.\n\nI couldn't find external sources for this question. Try another query or use 'Ask' mode to search the content."
+        : "عذرًا، لم أجد محتوى مرتبط مباشرة بسؤالك. جرّب إعادة صياغة السؤال أو اختر قسمًا من القائمة.\n\nSorry, I couldn't find content directly related to your question. Try rephrasing or select a section from the navigation.",
+      citations: [],
+      mode,
+      retrieved: chunks
+    };
+  }
+
+  // Build answer from local chunks
+  let answer = "";
+  const citations = [];
+
+  if (mode === "sources") {
+    answer = "**مصادر مقترحة / Recommended Sources:**\n\n";
+    chunks.filter(c => c.type === "source").slice(0, 3).forEach((src, i) => {
+      answer += `${i+1}. **${src.name}** (${src.category})\n   ${src.description}\n   🔗 [${src.url}](${src.url})\n\n`;
+      citations.push({ title: src.name, url: src.url, type: "source" });
+    });
+
+    if (chunks.some(c => c.type === "section")) {
+      answer += "\n**أقسام ذات صلة / Related Sections:**\n\n";
+      chunks.filter(c => c.type === "section").slice(0, 2).forEach(sec => {
+        answer += `• [${sec.title_ar}](${sec.anchor}) - ${sec.title_en}\n`;
+        citations.push({ title: sec.title_ar, anchor: sec.anchor, type: "section" });
+      });
+    }
+  } else {
+    // Ask mode - return section summaries
+    const topChunk = chunks[0];
+    answer = `**${topChunk.title_ar}** (${topChunk.title_en})\n\n${topChunk.content}\n\n`;
+    citations.push({ title: topChunk.title_ar, anchor: topChunk.anchor, page: topChunk.page });
+
+    if (chunks.length > 1) {
+      answer += "\n**أقسام أخرى مرتبطة / Other Related Sections:**\n";
+      chunks.slice(1, 4).forEach(c => {
+        answer += `• [${c.title_ar}](${c.anchor})\n`;
+        citations.push({ title: c.title_ar, anchor: c.anchor, page: c.page });
+      });
+    }
+  }
+
+  return { answer, citations, mode, retrieved: chunks };
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 4) UI STATE & DOM
+// ─────────────────────────────────────────────────────────────────────────
+let chatOpen = false;
+let currentMode = "ask";
+let chatHistory = [];
+
+function getCurrentPage() {
+  const active = document.querySelector(".page.active");
+  return active ? active.dataset.page : "roadmap";
+}
+
+function getCurrentSection() {
+  const sections = [...document.querySelectorAll("section[id]")];
+  for (const s of sections) {
+    const rect = s.getBoundingClientRect();
+    if (rect.top >= 0 && rect.top < window.innerHeight / 2) {
+      return s.id;
+    }
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 5) CHAT UI HTML
+// ─────────────────────────────────────────────────────────────────────────
+const chatHTML = `
+<div id="copilot-fab" class="copilot-fab" aria-label="Open Roadmap Copilot">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+  <div class="copilot-badge">AI</div>
+</div>
+
+<div id="copilot-drawer" class="copilot-drawer">
+  <div class="copilot-header">
+    <div class="copilot-title">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+      </svg>
+      <div>
+        <div class="copilot-title-main">Roadmap Copilot</div>
+        <div class="copilot-subtitle">مرشدك في التصميم والإنتاج</div>
+      </div>
+    </div>
+    <button id="copilot-close" class="copilot-close" aria-label="Close">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="copilot-modes">
+    <button class="copilot-mode active" data-mode="ask">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      اسأل
+    </button>
+    <button class="copilot-mode" data-mode="sources">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      </svg>
+      مصادر
+    </button>
+    <button class="copilot-mode" data-mode="coach">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      كوتش
+    </button>
+    <button class="copilot-mode" data-mode="project">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      </svg>
+      مشروع
+    </button>
+    <button class="copilot-mode" data-mode="quiz">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+      كويز
+    </button>
+  </div>
+
+  <div id="copilot-quick-actions" class="copilot-quick-actions"></div>
+
+  <div id="copilot-messages" class="copilot-messages"></div>
+
+  <div class="copilot-input-wrap">
+    <textarea id="copilot-input" class="copilot-input" placeholder="اكتب سؤالك هنا... Type your question here..." rows="1"></textarea>
+    <button id="copilot-send" class="copilot-send" aria-label="Send">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="copilot-footer">
+    Powered by OpenRouter & Claude · <a href="https://github.com/anthropics/anthropic-sdk-typescript" target="_blank" rel="noopener">Docs</a>
+  </div>
+</div>
+`;
+
+document.body.insertAdjacentHTML("beforeend", chatHTML);
+
+// ─────────────────────────────────────────────────────────────────────────
+// 6) QUICK ACTIONS (Section-Aware)
+// ─────────────────────────────────────────────────────────────────────────
+function updateQuickActions() {
+  const container = document.getElementById("copilot-quick-actions");
+  const page = getCurrentPage();
+  const section = getCurrentSection();
+
+  let actions = [];
+
+  if (section) {
+    const sectionEl = document.getElementById(section);
+    if (sectionEl) {
+      const h2 = sectionEl.querySelector("h2");
+      if (h2) {
+        const title = h2.textContent.trim().split(/\d+\)\s*/)[1] || h2.textContent.trim();
+        actions.push(`اشرح: ${title}`);
+      }
+    }
+  }
+
+  // Mode-specific quick actions
+  if (currentMode === "ask") {
+    actions.push("ما الفرق بين UX و UI؟", "كيف أبدأ في تعلم التصميم؟", "أفضل أدوات الـ AI للتصميم");
+  } else if (currentMode === "sources") {
+    actions.push("مصادر UX Research", "مصادر Design Systems", "مصادر Accessibility");
+  } else if (currentMode === "coach") {
+    actions.push("كيف أحسّن portfolio؟", "نصائح للـ handoff", "كيف أختار مشروع؟");
+  } else if (currentMode === "project") {
+    actions.push("بدء مشروع e-commerce", "تصميم SaaS dashboard", "إنشاء design system");
+  } else if (currentMode === "quiz") {
+    actions.push("اختبر معرفتي بالـ UX", "case study تحدّي", "سؤال في الـ AI tools");
+  }
+
+  container.innerHTML = actions.map(a =>
+    `<button class="copilot-chip">${a}</button>`
+  ).join("");
+
+  container.querySelectorAll(".copilot-chip").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.getElementById("copilot-input").value = btn.textContent;
+      sendMessage();
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 7) MESSAGE RENDERING
+// ─────────────────────────────────────────────────────────────────────────
+function addMessage(role, content, citations = []) {
+  const container = document.getElementById("copilot-messages");
+  const msg = document.createElement("div");
+  msg.className = `copilot-message copilot-message-${role}`;
+
+  if (role === "assistant") {
+    // Parse a deliberately small markdown subset safely.
+    // Never inject raw LLM/local-retrieval text as HTML before escaping.
+    const escapeHtml = value => String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+    let html = escapeHtml(content)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\[(.+?)\]\((#.+?)\)/g, '<a href="$2" class="copilot-link">$1</a>')
+      .replace(/\[(.+?)\]\((https?:\/\/.+?)\)/g, '<a href="$2" target="_blank" rel="noopener" class="copilot-link">$1 ↗</a>')
+      .replace(/^• (.+)$/gm, '<li>$1</li>')
+      .replace(/\n\n/g, "</p><p>")
+      .replace(/^(.+)$/gm, (match) => match.startsWith("<") ? match : `<p>${match}</p>`)
+      .replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
+
+    msg.innerHTML = html;
+
+    // Add click handlers for internal links
+    msg.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        const hash = a.getAttribute("href");
+        if (hash) {
+          window.location.hash = hash;
+          toggleChat(); // Close chat after navigation
+        }
+      });
+    });
+  } else {
+    msg.textContent = content;
+  }
+
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+
+  chatHistory.push({ role, content, citations });
+}
+
+function showTyping() {
+  const container = document.getElementById("copilot-messages");
+  const typing = document.createElement("div");
+  typing.className = "copilot-message copilot-message-assistant copilot-typing";
+  typing.id = "copilot-typing";
+  typing.innerHTML = '<div class="copilot-typing-dots"><span></span><span></span><span></span></div>';
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+  const typing = document.getElementById("copilot-typing");
+  if (typing) typing.remove();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 8) SEND MESSAGE
+// ─────────────────────────────────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById("copilot-input");
+  const query = input.value.trim();
+
+  if (!query) return;
+
+  addMessage("user", query);
+  input.value = "";
+  input.style.height = "auto";
+
+  showTyping();
+
+  try {
+    const result = await generateAnswer(query, currentMode);
+    hideTyping();
+    addMessage("assistant", result.answer, result.citations);
+  } catch (err) {
+    hideTyping();
+    addMessage("assistant", "عذرًا، حدث خطأ. حاول مرة أخرى.\n\nSorry, an error occurred. Please try again.");
+    console.error("Chat error:", err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 9) CHAT TOGGLE
+// ─────────────────────────────────────────────────────────────────────────
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const drawer = document.getElementById("copilot-drawer");
+  const fab = document.getElementById("copilot-fab");
+
+  if (chatOpen) {
+    drawer.classList.add("open");
+    fab.classList.add("hidden");
+    document.getElementById("copilot-input").focus();
+
+    if (chatHistory.length === 0) {
+      addMessage("assistant", `مرحبًا! أنا **Roadmap Copilot** 🚀\n\nأنا هنا لمساعدتك في رحلتك في التصميم والإنتاج. اختر وضعًا من الأعلى:\n\n• **اسأل** - ابحث في محتوى الـ Roadmap\n• **مصادر** - مصادر خارجية موثوقة\n• **كوتش** - نصائح ومشورة شخصية\n• **مشروع** - مساعدة في مشروعك\n• **كويز** - اختبر معرفتك\n\nHello! I'm **Roadmap Copilot** 🚀\n\nI'm here to help you in your design and production journey. Choose a mode above or ask me anything!`);
+      updateQuickActions();
+    }
+  } else {
+    drawer.classList.remove("open");
+    fab.classList.remove("hidden");
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// 10) EVENT LISTENERS
+// ─────────────────────────────────────────────────────────────────────────
+document.getElementById("copilot-fab").addEventListener("click", toggleChat);
+document.getElementById("copilot-close").addEventListener("click", toggleChat);
+
+document.getElementById("copilot-send").addEventListener("click", sendMessage);
+
+const input = document.getElementById("copilot-input");
+input.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+input.addEventListener("input", () => {
+  input.style.height = "auto";
+  input.style.height = Math.min(input.scrollHeight, 120) + "px";
+});
+
+document.querySelectorAll(".copilot-mode").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".copilot-mode").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentMode = btn.dataset.mode;
+    updateQuickActions();
+  });
+});
+
+// Add lightweight “Ask this section” action buttons without changing the original content.
+document.querySelectorAll("section[id]").forEach(section => {
+  const heading = section.querySelector("h2");
+  if (!heading || section.querySelector(".copilot-section-ask")) return;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "copilot-section-ask";
+  btn.textContent = "Ask AI عن هذا القسم";
+  btn.addEventListener("click", () => {
+    if (!chatOpen) toggleChat();
+    currentMode = "ask";
+    document.querySelectorAll(".copilot-mode").forEach(b => b.classList.toggle("active", b.dataset.mode === "ask"));
+    const input = document.getElementById("copilot-input");
+    input.value = `اشرح هذا القسم واديني checklist عملي: ${heading.textContent.trim()}`;
+    updateQuickActions();
+    sendMessage();
+  });
+  const intro = section.querySelector(".section-intro") || heading;
+  intro.insertAdjacentElement("afterend", btn);
+});
+
+// Update quick actions when section changes
+let lastSection = null;
+setInterval(() => {
+  const current = getCurrentSection();
+  if (current !== lastSection) {
+    lastSection = current;
+    if (chatOpen) updateQuickActions();
+  }
+}, 2000);
+
+// Preview/deep-link helper: /?copilot=open&q=... opens the drawer and can pre-run a query.
+const copilotParams = new URLSearchParams(location.search);
+if (copilotParams.get("copilot") === "open") {
+  setTimeout(() => {
+    if (!chatOpen) toggleChat();
+    const q = copilotParams.get("q");
+    if (q) {
+      const input = document.getElementById("copilot-input");
+      input.value = q;
+      sendMessage();
+    }
+  }, 500);
+}
+
+})();
 </script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   COPILOT CHAT STYLES (Dark Navy + Lime Theme)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.copilot-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--grad);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(168,207,56,.4), 0 0 0 1px rgba(255,255,255,.1) inset;
+  transition: transform .3s var(--ease), box-shadow .3s, opacity .3s;
+  z-index: 999;
+  border: none;
+}
+
+.copilot-fab:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(168,207,56,.5);
+}
+
+.copilot-fab.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.8);
+}
+
+.copilot-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--lime);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 3px 6px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+.copilot-drawer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: min(440px, 100vw);
+  height: min(680px, 100vh);
+  background: rgba(6,11,22,.96);
+  backdrop-filter: blur(24px);
+  border: 1px solid var(--line);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -8px 48px rgba(0,0,0,.6);
+  transform: translateY(100%);
+  transition: transform .4s var(--ease);
+  z-index: 1000;
+}
+
+.copilot-drawer.open {
+  transform: translateY(0);
+}
+
+.copilot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(13,27,43,.6);
+}
+
+.copilot-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.copilot-title svg {
+  color: var(--lime);
+  flex-shrink: 0;
+}
+
+.copilot-title-main {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -.02em;
+}
+
+.copilot-subtitle {
+  font-size: 11px;
+  color: var(--fog3);
+  font-family: var(--body);
+  margin-top: 2px;
+}
+
+.copilot-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--fog2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+
+.copilot-close:hover {
+  background: rgba(168,207,56,.1);
+  border-color: var(--line2);
+  color: var(--lime);
+}
+
+.copilot-modes {
+  display: flex;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.copilot-mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  background: rgba(19,38,58,.5);
+  border: 1px solid var(--line);
+  color: var(--fog2);
+  font-size: 12px;
+  font-family: var(--body);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.copilot-mode svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.copilot-mode:hover {
+  background: rgba(168,207,56,.08);
+  border-color: var(--line2);
+  color: var(--lime);
+}
+
+.copilot-mode.active {
+  background: var(--grad);
+  border-color: transparent;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.copilot-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.copilot-chip {
+  padding: 6px 12px;
+  border-radius: 16px;
+  background: rgba(168,207,56,.09);
+  border: 1px solid var(--line2);
+  color: var(--lime);
+  font-size: 11.5px;
+  font-family: var(--body);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+
+.copilot-chip:hover {
+  background: rgba(168,207,56,.16);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(168,207,56,.2);
+}
+
+.copilot-section-ask {
+  margin: 14px 0 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line2);
+  background: rgba(168,207,56,.08);
+  color: var(--lime-pale);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: transform .2s var(--ease), background .2s, border-color .2s;
+}
+
+.copilot-section-ask:hover {
+  transform: translateY(-2px);
+  background: rgba(168,207,56,.14);
+  border-color: rgba(168,207,56,.55);
+}
+
+.copilot-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.copilot-message {
+  max-width: 85%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: var(--body);
+  animation: messageIn .3s var(--ease);
+}
+
+@keyframes messageIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.copilot-message-user {
+  align-self: flex-end;
+  background: var(--grad);
+  color: var(--ink);
+  font-weight: 500;
+  direction: rtl;
+  text-align: right;
+}
+
+.copilot-message-assistant {
+  align-self: flex-start;
+  background: rgba(19,38,58,.7);
+  border: 1px solid var(--line);
+  color: var(--fog);
+  direction: rtl;
+  text-align: right;
+}
+
+.copilot-message-assistant p {
+  margin: 0 0 8px;
+}
+
+.copilot-message-assistant p:last-child {
+  margin: 0;
+}
+
+.copilot-message-assistant strong {
+  color: var(--lime);
+  font-weight: 600;
+}
+
+.copilot-message-assistant ul {
+  margin: 8px 0;
+  padding-right: 20px;
+}
+
+.copilot-message-assistant li {
+  margin: 4px 0;
+}
+
+.copilot-link {
+  color: var(--lime);
+  text-decoration: underline;
+  text-decoration-color: rgba(168,207,56,.3);
+  transition: text-decoration-color .2s;
+}
+
+.copilot-link:hover {
+  text-decoration-color: var(--lime);
+}
+
+.copilot-typing {
+  width: fit-content;
+  padding: 16px 18px;
+}
+
+.copilot-typing-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.copilot-typing-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  animation: typingDot 1.4s infinite;
+}
+
+.copilot-typing-dots span:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.copilot-typing-dots span:nth-child(3) {
+  animation-delay: .4s;
+}
+
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: .3; transform: scale(0.8); }
+  30% { opacity: 1; transform: scale(1.1); }
+}
+
+.copilot-input-wrap {
+  display: flex;
+  gap: 10px;
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  background: rgba(13,27,43,.4);
+  flex-shrink: 0;
+}
+
+.copilot-input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(19,38,58,.6);
+  border: 1px solid var(--line);
+  color: var(--fog);
+  font-size: 14px;
+  font-family: var(--body);
+  resize: none;
+  max-height: 120px;
+  transition: border-color .2s, background .2s;
+  direction: rtl;
+  text-align: right;
+}
+
+.copilot-input:focus {
+  outline: none;
+  border-color: var(--line2);
+  background: rgba(19,38,58,.8);
+}
+
+.copilot-input::placeholder {
+  color: var(--fog3);
+  direction: rtl;
+}
+
+.copilot-send {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--grad);
+  border: none;
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  flex-shrink: 0;
+}
+
+.copilot-send:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(168,207,56,.4);
+}
+
+.copilot-send:active {
+  transform: translateY(0);
+}
+
+.copilot-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  font-size: 10.5px;
+  color: var(--fog3);
+  text-align: center;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+
+.copilot-footer a {
+  color: var(--lime);
+  text-decoration: none;
+  transition: opacity .2s;
+}
+
+.copilot-footer a:hover {
+  opacity: .7;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .copilot-drawer {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .copilot-fab {
+    bottom: 20px;
+    right: 20px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .copilot-message {
+    max-width: 90%;
+  }
+
+  .copilot-modes {
+    padding: 10px 12px;
+  }
+
+  .copilot-mode {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .copilot-quick-actions {
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copilot-fab, .copilot-drawer, .copilot-message {
+    animation: none;
+    transition-duration: .001ms;
+  }
+}
+</style>
 </body>
 </html>

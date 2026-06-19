@@ -1,0 +1,167 @@
+{
+  "version": "1.0",
+  "generated": "2026-06-19",
+  "description": "Curated product design, UX, and AI sources for Roadmap Copilot",
+  "sources": [
+    {
+      "id": "nngroup",
+      "name": "Nielsen Norman Group",
+      "category": "UX Research & Usability",
+      "url": "https://www.nngroup.com",
+      "description": "Evidence-based UX research, usability heuristics, and best practices from Don Norman and Jakob Nielsen",
+      "topics": ["usability", "heuristics", "user research", "interaction design", "ux principles"]
+    },
+    {
+      "id": "material-design",
+      "name": "Material Design",
+      "category": "Design Systems",
+      "url": "https://m3.material.io",
+      "description": "Google's comprehensive design system with components, guidelines, and design tokens",
+      "topics": ["design system", "components", "tokens", "android", "accessibility", "material you"]
+    },
+    {
+      "id": "apple-hig",
+      "name": "Apple Human Interface Guidelines",
+      "category": "Design Systems",
+      "url": "https://developer.apple.com/design/human-interface-guidelines",
+      "description": "Apple's official design guidelines for iOS, macOS, watchOS, and tvOS",
+      "topics": ["ios design", "macos", "apple", "mobile design", "interface guidelines"]
+    },
+    {
+      "id": "figma-dev-mode",
+      "name": "Figma Dev Mode",
+      "category": "Design Tools & Handoff",
+      "url": "https://help.figma.com/hc/en-us/articles/15023124644247-Guide-to-Dev-Mode",
+      "description": "Developer handoff features, code generation, and design-to-code workflow in Figma",
+      "topics": ["figma", "dev mode", "handoff", "design to code", "developers"]
+    },
+    {
+      "id": "baymard-institute",
+      "name": "Baymard Institute",
+      "category": "E-commerce UX Research",
+      "url": "https://baymard.com",
+      "description": "Independent UX research on e-commerce usability with 150,000+ hours of testing. Industry-leading checkout and product page best practices",
+      "topics": ["e-commerce", "checkout", "cart", "product pages", "usability testing", "conversion"]
+    },
+    {
+      "id": "anthropic-docs",
+      "name": "Anthropic Documentation",
+      "category": "AI & LLM",
+      "url": "https://docs.anthropic.com",
+      "description": "Official Claude API documentation, prompt engineering guides, and best practices",
+      "topics": ["claude", "llm", "ai", "prompt engineering", "api", "anthropic"]
+    },
+    {
+      "id": "openai-platform",
+      "name": "OpenAI Platform Documentation",
+      "category": "AI & LLM",
+      "url": "https://platform.openai.com/docs",
+      "description": "OpenAI API docs, GPT models, embeddings, fine-tuning, and usage guidelines",
+      "topics": ["openai", "gpt", "chatgpt", "embeddings", "fine-tuning", "api"]
+    },
+    {
+      "id": "wcag",
+      "name": "WCAG (Web Content Accessibility Guidelines)",
+      "category": "Accessibility",
+      "url": "https://www.w3.org/WAI/WCAG22/quickref",
+      "description": "W3C's official accessibility guidelines with success criteria and techniques",
+      "topics": ["accessibility", "wcag", "a11y", "inclusive design", "compliance"]
+    },
+    {
+      "id": "laws-of-ux",
+      "name": "Laws of UX",
+      "category": "UX Principles",
+      "url": "https://lawsofux.com",
+      "description": "Collection of psychological principles that designers should consider when building user interfaces",
+      "topics": ["ux laws", "psychology", "cognitive load", "fitts law", "hicks law", "gestalt"]
+    },
+    {
+      "id": "figma-best-practices",
+      "name": "Figma Best Practices",
+      "category": "Design Tools",
+      "url": "https://www.figma.com/best-practices",
+      "description": "Official Figma guides for organization, components, auto-layout, and collaboration",
+      "topics": ["figma", "best practices", "components", "auto-layout", "variants", "organization"]
+    },
+    {
+      "id": "mdn-css",
+      "name": "MDN Web Docs - CSS",
+      "category": "Web Development",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+      "description": "Comprehensive CSS reference and guides from Mozilla Developer Network",
+      "topics": ["css", "web development", "frontend", "styling", "responsive design"]
+    },
+    {
+      "id": "smashing-magazine",
+      "name": "Smashing Magazine",
+      "category": "Design & Development",
+      "url": "https://www.smashingmagazine.com",
+      "description": "Articles on design, UX, frontend development, and web performance",
+      "topics": ["design articles", "ux", "web development", "performance", "best practices"]
+    },
+    {
+      "id": "a11y-project",
+      "name": "The A11Y Project",
+      "category": "Accessibility",
+      "url": "https://www.a11yproject.com",
+      "description": "Community-driven accessibility resources, checklist, and patterns",
+      "topics": ["accessibility", "wcag", "inclusive design", "checklist", "community"]
+    },
+    {
+      "id": "component-gallery",
+      "name": "Component Gallery",
+      "category": "Design Systems",
+      "url": "https://component.gallery",
+      "description": "Collection of design systems and component libraries from top companies",
+      "topics": ["design systems", "components", "patterns", "ui libraries", "inspiration"]
+    },
+    {
+      "id": "vercel-docs",
+      "name": "Vercel Documentation",
+      "category": "Deployment & Hosting",
+      "url": "https://vercel.com/docs",
+      "description": "Serverless deployment platform docs, edge functions, and frontend hosting",
+      "topics": ["vercel", "deployment", "serverless", "edge functions", "hosting", "next.js"]
+    },
+    {
+      "id": "supabase-docs",
+      "name": "Supabase Documentation",
+      "category": "Backend & Database",
+      "url": "https://supabase.com/docs",
+      "description": "Open source Firebase alternative - PostgreSQL, authentication, storage, real-time",
+      "topics": ["supabase", "postgresql", "backend", "authentication", "database", "real-time"]
+    },
+    {
+      "id": "openrouter",
+      "name": "OpenRouter Documentation",
+      "category": "AI Routing & APIs",
+      "url": "https://openrouter.ai/docs",
+      "description": "Unified API for accessing multiple LLMs with routing, fallbacks, and rate optimization",
+      "topics": ["llm routing", "ai api", "model selection", "openrouter", "unified api"]
+    },
+    {
+      "id": "interaction-design",
+      "name": "Interaction Design Foundation",
+      "category": "UX Education",
+      "url": "https://www.interaction-design.org",
+      "description": "UX design courses, articles, and learning resources from industry experts",
+      "topics": ["ux education", "courses", "learning", "interaction design", "design thinking"]
+    },
+    {
+      "id": "ux-collective",
+      "name": "UX Collective",
+      "category": "UX Community",
+      "url": "https://uxdesign.cc",
+      "description": "Curated UX articles, case studies, and insights from designers worldwide",
+      "topics": ["ux articles", "case studies", "community", "design insights", "best practices"]
+    },
+    {
+      "id": "ant-design",
+      "name": "Ant Design",
+      "category": "Design Systems",
+      "url": "https://ant.design",
+      "description": "Enterprise-level React UI design language and framework",
+      "topics": ["design system", "react", "components", "ant design", "enterprise ui"]
+    }
+  ]
+}

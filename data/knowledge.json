@@ -1,0 +1,387 @@
+{
+  "version": "1.0",
+  "generated": "2026-06-19",
+  "description": "Knowledge base extracted from Renad Eid Product Design Roadmaps",
+  "sections": [
+    {
+      "id": "roadmap-hero",
+      "page": "roadmap",
+      "anchor": "#top",
+      "title_ar": "Renad Eid · خرائط طريق التصميم والإنتاج 2026",
+      "title_en": "Roadmap",
+      "content": "Complete design and production roadmaps for product designers and teams. Covers workflow from brief to handoff, UI/UX principles, e-commerce vs SaaS models, idea to production pipeline, and standard operating procedures.",
+      "tags": ["roadmap", "workflow", "overview", "hero"],
+      "keywords": ["brief", "handoff", "workflow", "production", "SOP"]
+    },
+    {
+      "id": "workflow",
+      "page": "roadmap",
+      "anchor": "#workflow",
+      "title_ar": "Roadmap عملي من استلام الـ Brief إلى الـ Handoff",
+      "title_en": "Track 01 · Workflow",
+      "content": "12-step design workflow: Discovery, Problem Framing, Idea Generation, Prioritization, User Flows, Wireframing, UI Direction, Microcopy, Prototyping, Testing, Handoff, and Review. Includes AI tool usage at each step (ChatGPT, Claude, Perplexity, Gemini) and best practices for Figma, Maze, and Claude.",
+      "tags": ["workflow", "process", "brief", "handoff", "ai-tools"],
+      "keywords": ["discovery", "wireframes", "prototyping", "testing", "figma", "claude", "chatgpt"]
+    },
+    {
+      "id": "principles",
+      "page": "roadmap",
+      "anchor": "#principles",
+      "title_ar": "Roadmap مبني على مبادئ UI / UX",
+      "title_en": "Track 02 · Principles",
+      "content": "8 core UI/UX principles applied systematically: Hierarchy, Clarity, User Control, Consistency, Error Prevention, Visibility, Recognition over Recall. Includes 3 principle cards and case study showing 67% to 38% improvement in cart abandonment through checkout redesign.",
+      "tags": ["principles", "ux", "ui", "hierarchy", "consistency"],
+      "keywords": ["hierarchy", "clarity", "user control", "consistency", "error prevention", "visibility", "checkout", "cart abandonment"]
+    },
+    {
+      "id": "models",
+      "page": "roadmap",
+      "anchor": "#models",
+      "title_ar": "أمثلة على E-commerce و SaaS Models",
+      "title_en": "Track 03 · Models",
+      "content": "Comparison framework for E-commerce vs SaaS products. E-commerce focuses on trust, conversion, speed, discovery (PLP→PDP→Cart→Checkout). SaaS focuses on onboarding, retention, workflows, permissions (Dashboard→Settings→Teams). Case study: Bazaar dual interface (marketplace + seller dashboard).",
+      "tags": ["models", "ecommerce", "saas", "comparison"],
+      "keywords": ["e-commerce", "saas", "trust", "conversion", "onboarding", "retention", "marketplace", "dashboard", "bazaar"]
+    },
+    {
+      "id": "production",
+      "page": "roadmap",
+      "anchor": "#production",
+      "title_ar": "Roadmap من الفكرة إلى Production",
+      "title_en": "Track 04 · Idea → Production",
+      "content": "12-phase end-to-end roadmap: Intake, Scope, Spec, IA/UX, AI Model Test, Code Planning, Coding, Source Control, Backend, Frontend Preview, QA, Release. Tool stack includes Perplexity, Claude, Figma, Claude Code, GitHub, Supabase, Vercel. Complementary tools: Linear, Maze, Loom, Sentry, PostHog, Cursor.",
+      "tags": ["production", "development", "fullstack", "deployment"],
+      "keywords": ["intake", "scope", "spec", "IA", "code planning", "github", "supabase", "vercel", "qa", "release"]
+    },
+    {
+      "id": "sop",
+      "page": "roadmap",
+      "anchor": "#sop",
+      "title_ar": "Practical SOP / SOP عملي ثابت",
+      "title_en": "Track 05 · SOP",
+      "content": "12-step standard operating procedure checklist for every project. Sequential workflow from brief through production with clear accountability and deliverables at each stage.",
+      "tags": ["sop", "checklist", "process", "standard"],
+      "keywords": ["standard operating procedure", "checklist", "workflow", "accountability"]
+    },
+    {
+      "id": "reminders",
+      "page": "roadmap",
+      "anchor": "#reminders",
+      "title_ar": "Final Reminders",
+      "title_en": "Final Reminders",
+      "content": "Audience-specific guidance for Junior Designers, Product Teams, and Engineering teams. Key reminders for successful project delivery and collaboration.",
+      "tags": ["reminders", "guidance", "best-practices"],
+      "keywords": ["junior designer", "product team", "engineering", "collaboration"]
+    },
+    {
+      "id": "ai-hero",
+      "page": "ai-guide",
+      "anchor": "#ai-top",
+      "title_ar": "AI Guide / AI Mastery",
+      "title_en": "A practical guide to AI Mastery",
+      "content": "Comprehensive AI guide covering landscape of tools, practical workflows, decision-making frameworks, core concepts, product architectures, and learning paths for product designers and teams.",
+      "tags": ["ai", "guide", "overview", "mastery"],
+      "keywords": ["ai tools", "ai mastery", "ai guide", "claude", "chatgpt", "perplexity"]
+    },
+    {
+      "id": "tools",
+      "page": "ai-guide",
+      "anchor": "#tools",
+      "title_ar": "ما هي أدوات الـ AI؟",
+      "title_en": "Chapter 01 · The Landscape",
+      "content": "6 AI tool categories: 1) Conversation & Reasoning (Claude, ChatGPT, Gemini), 2) Search with Sources (Perplexity, Gemini), 3) Coding Agents & IDEs (Claude Code, Cursor, Codex, Copilot, Antigravity), 4) Studios & Experimentation (Google AI Studio, Vercel v0), 5) Building & Deployment (Vercel, Supabase, Firebase), 6) Image & Visual Design (Nano Banana Pro, Midjourney, Adobe Firefly). Includes 18-row comparison table.",
+      "tags": ["ai-tools", "landscape", "comparison"],
+      "keywords": ["claude", "chatgpt", "gemini", "perplexity", "cursor", "codex", "copilot", "vercel", "midjourney", "firefly"]
+    },
+    {
+      "id": "career",
+      "page": "ai-guide",
+      "anchor": "#career",
+      "title_ar": "كيف تستخدمها في بيئة العمل؟",
+      "title_en": "Chapter 02 · In Practice",
+      "content": "6 workflow applications: Research & Understanding, Writing & Documentation, Coding, Design, Data, Communications. Guardrails: No secrets, verify output, keep human judgment. Practical examples for each workflow category.",
+      "tags": ["ai-workflow", "practice", "guardrails"],
+      "keywords": ["research", "documentation", "coding", "design", "data", "communication", "guardrails", "verification"]
+    },
+    {
+      "id": "choose",
+      "page": "ai-guide",
+      "anchor": "#choose",
+      "title_ar": "متى تختار الأداة المناسبة؟",
+      "title_en": "Chapter 03 · Decision Matrix",
+      "content": "Decision tree for AI tool selection based on task type: Updated facts → Perplexity; Code execution → Claude Code; Images → Image tools; Deep thinking → Claude; API testing → Google AI Studio. Visual flowchart for quick reference.",
+      "tags": ["decision-matrix", "tool-selection"],
+      "keywords": ["decision tree", "tool selection", "perplexity", "claude code", "api testing", "google ai studio"]
+    },
+    {
+      "id": "concepts",
+      "page": "ai-guide",
+      "anchor": "#concepts",
+      "title_ar": "المفاهيم الأساسية",
+      "title_en": "Chapter 04 · The Vocabulary",
+      "content": "8 foundational AI concepts: LLM (predicts next token), Models (sizes/speeds/costs), Agents (plans/executes/monitors in loop), Skills (reusable capabilities), MCP (Model Context Protocol), Tokens (pricing/context units), Memory (persistent recall), Context (temporary visibility). Visual flowchart included.",
+      "tags": ["concepts", "vocabulary", "fundamentals"],
+      "keywords": ["llm", "models", "agents", "skills", "mcp", "tokens", "memory", "context", "model context protocol"]
+    },
+    {
+      "id": "harness",
+      "page": "ai-guide",
+      "anchor": "#harness",
+      "title_ar": "ما هو الـ Harness؟",
+      "title_en": "Chapter 05 · The Scaffolding",
+      "content": "6 scaffold components around AI models: System Prompt, Tools, Memory & Context, Loop (execution cycle), Retrieval (RAG), Guards & Evals. 4-step improvement methodology: Measure with evals → Improve context → Add tools → Iterate prompt.",
+      "tags": ["harness", "scaffolding", "rag", "evals"],
+      "keywords": ["system prompt", "tools", "memory", "context", "retrieval", "rag", "guards", "evals", "evaluation"]
+    },
+    {
+      "id": "products",
+      "page": "ai-guide",
+      "anchor": "#products",
+      "title_ar": "بناء منتجات AI بأشكال مختلفة",
+      "title_en": "Chapter 06 · Product Shapes",
+      "content": "6 AI product architectures (escalating complexity): 1) Wrapper (prompt + interface), 2) RAG App (model + knowledge base), 3) Agentic (agents with tools), 4) Multi-Agent (specialized agents + coordination), 5) Copilot Embedded (AI inside existing product), 6) Fine-tuned (model trained on own data). Each includes examples, metrics, and case studies.",
+      "tags": ["product-shapes", "architectures", "rag", "agents"],
+      "keywords": ["wrapper", "rag app", "agentic", "multi-agent", "copilot", "fine-tuned", "architecture", "product"]
+    },
+    {
+      "id": "mindmap",
+      "page": "ai-guide",
+      "anchor": "#mindmap",
+      "title_ar": "Mind-Map Section",
+      "title_en": "Chapter 07",
+      "content": "Visual mind map of AI concepts and relationships for quick reference and understanding of the AI ecosystem.",
+      "tags": ["mindmap", "visualization"],
+      "keywords": ["mind map", "visualization", "ecosystem"]
+    },
+    {
+      "id": "mastery",
+      "page": "ai-guide",
+      "anchor": "#mastery",
+      "title_ar": "Claude Code & Codex",
+      "title_en": "Chapter 08 · Mastery",
+      "content": "Deep dive into Claude Code and Codex for AI-assisted development. Best practices, workflows, and mastery techniques.",
+      "tags": ["claude-code", "codex", "mastery"],
+      "keywords": ["claude code", "codex", "development", "mastery", "ai coding"]
+    },
+    {
+      "id": "context-files",
+      "page": "ai-guide",
+      "anchor": "#context-files",
+      "title_ar": "CLAUDE.md & AGENTS.md",
+      "title_en": "Chapter 09 · Context Files",
+      "content": "Using CLAUDE.md and AGENTS.md files for persistent context and agent configuration. Best practices for structuring context files.",
+      "tags": ["context-files", "claude.md", "agents.md"],
+      "keywords": ["claude.md", "agents.md", "context files", "configuration"]
+    },
+    {
+      "id": "agents",
+      "page": "ai-guide",
+      "anchor": "#agents",
+      "title_ar": "Agent Environments",
+      "title_en": "Chapter 10 · Agents",
+      "content": "Setting up and managing AI agent environments. Agent orchestration, tools, and best practices.",
+      "tags": ["agents", "environments", "orchestration"],
+      "keywords": ["agents", "environment", "orchestration", "tools"]
+    },
+    {
+      "id": "automations",
+      "page": "ai-guide",
+      "anchor": "#automations",
+      "title_ar": "Automations",
+      "title_en": "Chapter 11 · Automations",
+      "content": "Building automated workflows and processes using AI. Integration patterns and automation strategies.",
+      "tags": ["automations", "workflows", "integration"],
+      "keywords": ["automation", "workflows", "integration", "processes"]
+    },
+    {
+      "id": "scratch",
+      "page": "ai-guide",
+      "anchor": "#scratch",
+      "title_ar": "Build a Model",
+      "title_en": "Chapter 12 · From Scratch",
+      "content": "Building AI models from scratch. Training, fine-tuning, and deployment strategies.",
+      "tags": ["model-building", "training", "scratch"],
+      "keywords": ["build model", "training", "fine-tuning", "deployment", "from scratch"]
+    },
+    {
+      "id": "learning",
+      "page": "ai-guide",
+      "anchor": "#learning",
+      "title_ar": "Learning Path",
+      "title_en": "Chapter 13 · Learning Path",
+      "content": "Structured learning path for AI mastery. Resources, milestones, and progression strategy.",
+      "tags": ["learning-path", "education", "resources"],
+      "keywords": ["learning path", "education", "resources", "progression", "mastery"]
+    },
+    {
+      "id": "ux-hero",
+      "page": "ux",
+      "anchor": "#ux-top",
+      "title_ar": "UI/UX Design Guide",
+      "title_en": "Foundations to Mastery",
+      "content": "Comprehensive UI/UX design guide covering foundations, processes, research, information architecture, visual principles, design systems, accessibility, and career roadmap.",
+      "tags": ["ux", "ui", "design", "guide", "overview"],
+      "keywords": ["ui", "ux", "design", "user experience", "user interface"]
+    },
+    {
+      "id": "ux-intro",
+      "page": "ux",
+      "anchor": "#ux-intro",
+      "title_ar": "ما هو الـ UI/UX؟",
+      "title_en": "Chapter 01 · Foundations",
+      "content": "UX vs UI distinction. UX = Experience (did user reach goal easily?). UI = Interface (is it clear and beautiful?). TV remote analogy for understanding the difference.",
+      "tags": ["foundations", "ux-definition", "ui-definition"],
+      "keywords": ["ux", "ui", "user experience", "user interface", "foundations", "definitions"]
+    },
+    {
+      "id": "ux-process",
+      "page": "ux",
+      "anchor": "#ux-process",
+      "title_ar": "رحلة التصميم (Design Thinking)",
+      "title_en": "Chapter 02 · The Process",
+      "content": "5-phase Design Thinking methodology: 1) Empathize (interviews/observation), 2) Define (problem statement), 3) Ideate (14+ ideas), 4) Prototype (low-fidelity mockup), 5) Test (validate with users). Case Study: Food delivery tracking redesign achieving -62% support messages.",
+      "tags": ["design-thinking", "process", "methodology"],
+      "keywords": ["design thinking", "empathize", "define", "ideate", "prototype", "test", "food delivery", "case study"]
+    },
+    {
+      "id": "ux-research",
+      "page": "ux",
+      "anchor": "#ux-research",
+      "title_ar": "أبحاث المستخدم (User Research)",
+      "title_en": "Chapter 03 · Discover",
+      "content": "6 research methods: 1) Interviews (1-on-1 qualitative), 2) Surveys (quantitative at scale), 3) Usability Testing (watch user complete task), 4) Competitor Analysis (study solutions), 5) Personas (representative profiles), 6) Journey & Flow Maps (emotional + logical paths). Case Study: Madrasti education app (+44% retention with auto-linking).",
+      "tags": ["user-research", "research-methods", "personas"],
+      "keywords": ["interviews", "surveys", "usability testing", "competitor analysis", "personas", "journey maps", "user research"]
+    },
+    {
+      "id": "ux-ia",
+      "page": "ux",
+      "anchor": "#ux-ia",
+      "title_ar": "هندسة المعلومات (IA)",
+      "title_en": "Chapter 04 · Structure",
+      "content": "6 IA components: 1) Hierarchy (information layers), 2) Navigation (wayfinding), 3) Card Sorting (mental models), 4) Sitemap (full structure), 5) Labeling (user language), 6) Findability (search + filters + discovery). Case Study: Electronics marketplace (40→6 categories, +38% task success).",
+      "tags": ["information-architecture", "ia", "navigation", "hierarchy"],
+      "keywords": ["information architecture", "ia", "hierarchy", "navigation", "card sorting", "sitemap", "labeling", "findability"]
+    },
+    {
+      "id": "ux-wireframe",
+      "page": "ux",
+      "anchor": "#ux-wireframe",
+      "title_ar": "Wireframes و Prototypes",
+      "title_en": "Chapter 05 · Sketch",
+      "content": "Creating effective wireframes and prototypes. Low-fidelity to high-fidelity progression. Best practices for rapid prototyping and user testing.",
+      "tags": ["wireframes", "prototypes", "sketching"],
+      "keywords": ["wireframes", "prototypes", "sketching", "low-fidelity", "high-fidelity", "rapid prototyping"]
+    },
+    {
+      "id": "ux-principles",
+      "page": "ux",
+      "anchor": "#ux-principles",
+      "title_ar": "Visual Principles",
+      "title_en": "Chapter 06 · Principles",
+      "content": "Core visual design principles: contrast, alignment, repetition, proximity, balance, hierarchy. Application in UI design.",
+      "tags": ["visual-principles", "design-principles"],
+      "keywords": ["contrast", "alignment", "repetition", "proximity", "balance", "hierarchy", "visual design"]
+    },
+    {
+      "id": "ux-color",
+      "page": "ux",
+      "anchor": "#ux-color",
+      "title_ar": "Color",
+      "title_en": "Chapter 07 · Color",
+      "content": "Color theory for UI/UX. Creating palettes, accessibility considerations (WCAG), psychological impact, and systematic color usage.",
+      "tags": ["color", "color-theory", "palettes"],
+      "keywords": ["color theory", "palettes", "wcag", "accessibility", "contrast", "color psychology"]
+    },
+    {
+      "id": "ux-type",
+      "page": "ux",
+      "anchor": "#ux-type",
+      "title_ar": "Typography",
+      "title_en": "Chapter 08 · Type",
+      "content": "Typography fundamentals: font selection, hierarchy, spacing, readability. Creating typographic scales and systems.",
+      "tags": ["typography", "fonts", "type"],
+      "keywords": ["typography", "fonts", "hierarchy", "readability", "type scale", "font pairing"]
+    },
+    {
+      "id": "ux-layout",
+      "page": "ux",
+      "anchor": "#ux-layout",
+      "title_ar": "Layout & Spacing",
+      "title_en": "Chapter 09 · Layout",
+      "content": "Layout principles and spacing systems. Grid systems, white space, visual rhythm, responsive layouts.",
+      "tags": ["layout", "spacing", "grids"],
+      "keywords": ["layout", "spacing", "grids", "white space", "visual rhythm", "responsive design"]
+    },
+    {
+      "id": "ux-systems",
+      "page": "ux",
+      "anchor": "#ux-systems",
+      "title_ar": "Design Systems",
+      "title_en": "Chapter 10 · Systems",
+      "content": "Building and maintaining design systems. Tokens, components, patterns, documentation. Examples: Material Design, Apple HIG, Ant Design.",
+      "tags": ["design-systems", "components", "tokens"],
+      "keywords": ["design systems", "tokens", "components", "patterns", "documentation", "material design", "apple hig"]
+    },
+    {
+      "id": "ux-motion",
+      "page": "ux",
+      "anchor": "#ux-motion",
+      "title_ar": "Motion",
+      "title_en": "Chapter 11 · Motion",
+      "content": "Motion design and animation principles. Transitions, micro-interactions, easing, performance considerations.",
+      "tags": ["motion", "animation", "micro-interactions"],
+      "keywords": ["motion design", "animation", "transitions", "micro-interactions", "easing", "performance"]
+    },
+    {
+      "id": "ux-a11y",
+      "page": "ux",
+      "anchor": "#ux-a11y",
+      "title_ar": "Accessibility",
+      "title_en": "Chapter 12 · A11y",
+      "content": "Accessibility fundamentals and WCAG guidelines. ARIA, keyboard navigation, screen readers, color contrast, inclusive design practices.",
+      "tags": ["accessibility", "a11y", "wcag", "inclusive-design"],
+      "keywords": ["accessibility", "a11y", "wcag", "aria", "screen readers", "keyboard navigation", "inclusive design"]
+    },
+    {
+      "id": "ux-heuristics",
+      "page": "ux",
+      "anchor": "#ux-heuristics",
+      "title_ar": "Heuristics",
+      "title_en": "Chapter 13 · Heuristics",
+      "content": "Nielsen's 10 usability heuristics and practical application. Heuristic evaluation methodology.",
+      "tags": ["heuristics", "usability", "nielsen"],
+      "keywords": ["heuristics", "usability", "nielsen", "heuristic evaluation", "usability principles"]
+    },
+    {
+      "id": "ux-tools",
+      "page": "ux",
+      "anchor": "#ux-tools",
+      "title_ar": "Tools",
+      "title_en": "Chapter 14 · Tools",
+      "content": "Essential UX/UI design tools: Figma, Adobe XD, Sketch, prototyping tools, user testing platforms, handoff tools.",
+      "tags": ["tools", "software", "figma"],
+      "keywords": ["figma", "adobe xd", "sketch", "prototyping", "user testing", "design tools"]
+    },
+    {
+      "id": "ux-cases",
+      "page": "ux",
+      "anchor": "#ux-cases",
+      "title_ar": "Case Studies",
+      "title_en": "Chapter 15 · Cases",
+      "content": "Real-world UX case studies demonstrating application of principles, research, and design processes. Before/after metrics.",
+      "tags": ["case-studies", "examples", "real-world"],
+      "keywords": ["case studies", "examples", "metrics", "before after", "real world"]
+    },
+    {
+      "id": "ux-roadmap",
+      "page": "ux",
+      "anchor": "#ux-roadmap",
+      "title_ar": "0 → Hero",
+      "title_en": "Chapter 16 · Roadmap",
+      "content": "Complete learning roadmap from beginner to expert UX designer. Skills progression, milestones, portfolio building.",
+      "tags": ["roadmap", "learning-path", "career"],
+      "keywords": ["learning roadmap", "career path", "skills progression", "portfolio", "beginner to expert"]
+    }
+  ]
+}

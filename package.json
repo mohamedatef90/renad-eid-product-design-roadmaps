@@ -1,0 +1,13 @@
+{
+  "name": "renad-eid-product-design-roadmaps",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check api/chat.js && node scripts/check-static.mjs",
+    "serve": "npx --yes http-server -p 8000"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
